@@ -27,10 +27,81 @@
 
   <header class="header" id="header">
     <div class="container header__inner">
-      <a href="index.html" class="logo"><div><div class="logo__mark">LS <span>Detailing</span></div><span class="logo__sub">Элиста</span></div></a>
+      <a href="index.html" class="logo">
+        <div>
+          <div class="logo__mark">LS <span>Detailing</span></div>
+          <span class="logo__sub">Элиста</span>
+        </div>
+      </a>
       <nav class="nav" id="nav">
         <a href="index.html" class="nav__link">Главная</a>
-        <a href="services.html" class="nav__link">Услуги</a>
+        <div class="nav__item nav__dropdown" id="navServices">
+          <button type="button" class="nav__link nav__dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+            Услуги<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav__dropdown-panel" hidden>
+            <div class="nav__dropdown-panel-inner">
+              <a href="services.html" class="nav__dropdown-all">Все услуги →</a>
+              <ul class="nav__dropdown-cats">
+          <li class="nav__dropdown-cat">
+            <button type="button" class="nav__dropdown-cat-btn" aria-expanded="false">Оклейка плёнкой<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <ul class="nav__dropdown-sub">
+                <li><a href="services/okleika-vinilovaya.html" class="nav__dropdown-link">Оклейка виниловой плёнкой</a></li>
+                <li><a href="services/okleika-dekorativnaya.html" class="nav__dropdown-link">Декоративная оклейка</a></li>
+                <li><a href="services/okleika-antigraviynaya.html" class="nav__dropdown-link">Антигравийная оклейка</a></li>
+                <li><a href="services/bronirovanie-lobovogo.html" class="nav__dropdown-link">Бронирование лобового стекла</a></li>
+            </ul>
+          </li>
+          <li class="nav__dropdown-cat">
+            <button type="button" class="nav__dropdown-cat-btn" aria-expanded="false">Полировка<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <ul class="nav__dropdown-sub">
+                <li><a href="services/polirovka-kuzova.html" class="nav__dropdown-link">Полировка кузова</a></li>
+                <li><a href="services/polirovka-detaley-salona.html" class="nav__dropdown-link">Полировка деталей салона</a></li>
+            </ul>
+          </li>
+          <li class="nav__dropdown-cat">
+            <button type="button" class="nav__dropdown-cat-btn" aria-expanded="false">Детейлинг-уход<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <ul class="nav__dropdown-sub">
+                <li><a href="services/himchistka-salona.html" class="nav__dropdown-link">Химчистка салона</a></li>
+                <li><a href="services/chistka-podkapotnogo.html" class="nav__dropdown-link">Чистка подкапотного пространства</a></li>
+                <li><a href="services/chistka-radiatora.html" class="nav__dropdown-link">Чистка радиатора</a></li>
+                <li><a href="services/uhod-krysha-kabrioleta.html" class="nav__dropdown-link">Уход за крышей кабриолета</a></li>
+                <li><a href="services/deteyling-mototsiklov.html" class="nav__dropdown-link">Детейлинг мотоциклов</a></li>
+            </ul>
+          </li>
+          <li class="nav__dropdown-cat">
+            <button type="button" class="nav__dropdown-cat-btn" aria-expanded="false">Малярные работы<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <ul class="nav__dropdown-sub">
+                <li><a href="services/pokraska.html" class="nav__dropdown-link">Покраска элементов</a></li>
+                <li><a href="services/antikhrom.html" class="nav__dropdown-link">Антихром</a></li>
+                <li><a href="services/pokraska-diskov.html" class="nav__dropdown-link">Покраска дисков</a></li>
+                <li><a href="services/pdr.html" class="nav__dropdown-link">PDR — удаление вмятин</a></li>
+            </ul>
+          </li>
+          <li class="nav__dropdown-cat">
+            <button type="button" class="nav__dropdown-cat-btn" aria-expanded="false">Перетяжка и реставрация<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <ul class="nav__dropdown-sub">
+                <li><a href="services/pereyazhka-salona.html" class="nav__dropdown-link">Перетяжка салона</a></li>
+                <li><a href="services/pereyazhka-rulya.html" class="nav__dropdown-link">Перетяжка руля</a></li>
+                <li><a href="services/pereyazhka-sideniy.html" class="nav__dropdown-link">Перетяжка сидений</a></li>
+            </ul>
+          </li>
+          <li class="nav__dropdown-cat">
+            <button type="button" class="nav__dropdown-cat-btn" aria-expanded="false">Дооснащение<svg class="nav__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <ul class="nav__dropdown-sub">
+                <li><a href="services/zvezdnoye-nebo.html" class="nav__dropdown-link">Звёздное небо</a></li>
+                <li><a href="services/karbon.html" class="nav__dropdown-link">Карбоновые элементы</a></li>
+                <li><a href="services/multimediya.html" class="nav__dropdown-link">Мультимедиа</a></li>
+                <li><a href="services/porogi.html" class="nav__dropdown-link">Пороги</a></li>
+                <li><a href="services/shumoizolyatsiya.html" class="nav__dropdown-link">Шумоизоляция</a></li>
+                <li><a href="services/dovodchiki.html" class="nav__dropdown-link">Доводчики дверей</a></li>
+                <li><a href="services/setka-radiatora.html" class="nav__dropdown-link">Защитная сетка радиатора</a></li>
+            </ul>
+          </li>
+              </ul>
+            </div>
+          </div>
+        </div>
         <a href="works.html" class="nav__link">Работы</a>
         <a href="useful.html" class="nav__link">Полезное</a>
         <a href="about.html" class="nav__link">О нас</a>
