@@ -8,11 +8,15 @@ SOCIALS = """<a href="https://wa.me/79618422227" class="socials__link" target="_
 
 MAP_IFRAME = """<iframe src="https://yandex.ru/map-widget/v1/?text=%D0%AD%D0%BB%D0%B8%D1%81%D1%82%D0%B0%2C%2010-%D0%B9%20%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%80%D0%B0%D0%B9%D0%BE%D0%BD%2C%2052&amp;z=17&amp;l=map&amp;pt=44.2695%2C46.3088%2Cpm2rdm" title="LS Detailing на карте" allowfullscreen loading="lazy"></iframe>"""
 
+RATING_BADGE = """<a href="https://yandex.com/maps/-/CTQgrE~F" target="_blank" rel="noopener" class="rating-badge"><span class="rating-badge__star">★</span> <span class="rating-badge__text">5.0 на Яндекс Картах</span></a>"""
+
 NAV_PAGES = [
     ("index.html", "Главная", "index"),
     ("services.html", "Услуги", "services"),
+    ("advantages.html", "Преимущества", "advantages"),
     ("works.html", "Работы", "works"),
     ("useful.html", "Полезное", "useful"),
+    ("reviews.html", "Отзывы", "reviews"),
     ("about.html", "О нас", "about"),
     ("contacts.html", "Контакты", "contacts"),
 ]
@@ -57,38 +61,22 @@ def render_nav_dropdown(prefix=""):
 
 
 def render_nav(prefix="", active=None):
-    links = []
+    parts = []
     for href, label, key in NAV_PAGES:
         if key == "services":
-            continue
-        cls = "nav__link"
-        if active == key:
-            cls += " nav__link--active"
-        links.append(f'        <a href="{prefix}{href}" class="{cls}">{label}</a>')
-
-    services_dropdown = render_nav_dropdown(prefix)
-    if active == "services":
-        services_dropdown = services_dropdown.replace(
-            'class="nav__link nav__dropdown-trigger"',
-            'class="nav__link nav__dropdown-trigger nav__link--active"',
-        )
-
-    nav_links = []
-    for href, label, key in NAV_PAGES:
-        if key == "index":
-            nav_links.append(links[0])
-        elif key == "services":
-            nav_links.append(services_dropdown)
-        elif key == "works":
-            nav_links.append(links[1])
-        elif key == "useful":
-            nav_links.append(links[2])
-        elif key == "about":
-            nav_links.append(links[3])
-        elif key == "contacts":
-            nav_links.append(links[4])
-
-    return "\n".join(nav_links)
+            services_dropdown = render_nav_dropdown(prefix)
+            if active == "services":
+                services_dropdown = services_dropdown.replace(
+                    'class="nav__link nav__dropdown-trigger"',
+                    'class="nav__link nav__dropdown-trigger nav__link--active"',
+                )
+            parts.append(services_dropdown)
+        else:
+            cls = "nav__link"
+            if active == key:
+                cls += " nav__link--active"
+            parts.append(f'        <a href="{prefix}{href}" class="{cls}">{label}</a>')
+    return "\n".join(parts)
 
 
 def render_topbar(prefix=""):
@@ -98,6 +86,7 @@ def render_topbar(prefix=""):
       <div class="socials topbar__socials">
         {SOCIALS}
       </div>
+      {RATING_BADGE}
       <a href="tel:+79618422227" class="topbar__phone">+7 (961) 842-22-27</a>
     </div>
   </div>"""

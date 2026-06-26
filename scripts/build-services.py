@@ -221,7 +221,7 @@ def render_services_page():
           <p>Премиальный детейлинг-центр в Элисте. Комплексный уход за автомобилем в одном месте.</p>
           <div class="socials socials--footer" style="margin-top:20px">{SOCIALS}</div>
         </div>
-        <div><h4 class="footer__heading">Навигация</h4><a href="services.html" class="footer__link">Услуги</a><a href="works.html" class="footer__link">Работы</a><a href="useful.html" class="footer__link">Полезное</a><a href="about.html" class="footer__link">О нас</a><a href="contacts.html" class="footer__link">Контакты</a></div>
+        <div><h4 class="footer__heading">Навигация</h4><a href="services.html" class="footer__link">Услуги</a><a href="advantages.html" class="footer__link">Преимущества</a><a href="works.html" class="footer__link">Работы</a><a href="useful.html" class="footer__link">Полезное</a><a href="reviews.html" class="footer__link">Отзывы</a><a href="about.html" class="footer__link">О нас</a><a href="contacts.html" class="footer__link">Контакты</a></div>
         <div><h4 class="footer__heading">Контакты</h4><a href="tel:+79618422227" class="footer__link">+7 (961) 842-22-27</a><p class="footer__link">Республика Калмыкия, г. Элиста, 10 улица, д. 52</p><p class="footer__link">Ежедневно 10:00–19:00</p></div>
       </div>
       <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p><a href="#" class="footer__link">Политика конфиденциальности</a></div>
