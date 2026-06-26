@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initServicesDropdown();
   initMobileNav();
   initScrollReveal();
+  initAdvantageStagger();
   initLightbox();
   initForm();
   initCounters();
@@ -114,6 +115,25 @@ function initScrollReveal() {
   elements.forEach((el) => observer.observe(el));
 }
 
+function initAdvantageStagger() {
+  const grids = document.querySelectorAll('[data-advantage-stagger]');
+  if (!grids.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('advantages__cluster-grid--visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -24px 0px' }
+  );
+
+  grids.forEach((grid) => observer.observe(grid));
+}
+
 function initLightbox() {
   const items = document.querySelectorAll('[data-lightbox]');
   const lightbox = document.getElementById('lightbox');
@@ -190,12 +210,15 @@ function initForm() {
 function initCounters() {
   document.querySelectorAll('[data-count]').forEach((el) => {
     const target = parseInt(el.dataset.count, 10);
+    const duration = parseInt(el.dataset.duration, 10) || 2000;
+    const plain = el.hasAttribute('data-plain');
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       const start = performance.now();
       const tick = (now) => {
-        const p = Math.min((now - start) / 2000, 1);
-        el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString('ru-RU');
+        const p = Math.min((now - start) / duration, 1);
+        const val = Math.floor((1 - Math.pow(1 - p, 3)) * target);
+        el.textContent = plain ? String(val) : val.toLocaleString('ru-RU');
         if (p < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
