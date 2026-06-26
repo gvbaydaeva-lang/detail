@@ -435,7 +435,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero {
   position: relative;
   min-height: 600px;
-  background-image: url('../IMG_8748.webp');
+  background-image: url('../images/hero-team.png');
   background-size: cover;
   background-position: 78% center;
   background-repeat: no-repeat;
@@ -1693,7 +1693,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-radius: 4px;
   padding: 32px;
   opacity: 0;
-  transform: translateY(16px);
+  transform: translate3d(0, 16px, 0);
   transition:
     opacity 0.5s ease-out,
     transform 0.5s ease-out,
@@ -1703,18 +1703,36 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .advantages__cluster-grid--visible .advantage-card {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 
 .advantages__cluster-grid--visible .advantage-card:nth-child(2) {
   transition-delay: 0.12s;
 }
 
-.advantages__cluster-grid--visible .advantage-card:hover {
-  transition-delay: 0s;
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-  border-color: #d0d0d0;
+@media (hover: hover) {
+  .advantages__cluster-grid--visible .advantage-card:hover {
+    transition-delay: 0s;
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    border-color: #d0d0d0;
+  }
+}
+
+@media (hover: none) {
+  .advantages__cluster-grid--visible .advantage-card:active {
+    transform: translate3d(0, 0, 0) scale(0.98);
+    transition: transform 0.15s ease;
+  }
+}
+
+.advantages .advantage-card__icon {
+  display: block;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+  flex-shrink: 0;
 }
 
 .advantages .advantage-card__title {
