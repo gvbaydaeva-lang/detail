@@ -2462,12 +2462,14 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   }
 
   .philosophy__video {
+    order: 2;
     flex: none;
     max-width: 340px;
     width: 100%;
   }
 
   .philosophy__content {
+    order: 1;
     width: 100%;
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
