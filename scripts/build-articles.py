@@ -10,7 +10,7 @@ SCRIPTS = Path(__file__).resolve().parent
 ARTICLES_DIR = ROOT / "articles"
 
 sys.path.insert(0, str(SCRIPTS))
-from site_common import SOCIALS, render_header, render_topbar  # noqa: E402
+from site_common import SOCIALS, render_site_header  # noqa: E402
 
 ARTICLES = [
     {
@@ -283,8 +283,7 @@ def render_article(article):
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-{render_topbar("../")}
-{render_header("../", "useful")}
+{render_site_header("../", "useful")}
   <main class="page-top">
     <article class="article-page">
       <div class="article-page__hero">
@@ -364,8 +363,7 @@ def render_useful_page():
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-{render_topbar()}
-{render_header(active="useful")}
+{render_site_header(active="useful")}
   <main class="page-top">
     <section class="page-hero">
       <div class="container reveal">

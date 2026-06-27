@@ -8,7 +8,10 @@ SOCIALS = """<a href="https://wa.me/79618422227" class="socials__link" target="_
 
 MAP_IFRAME = """<iframe src="https://yandex.ru/map-widget/v1/?text=%D0%AD%D0%BB%D0%B8%D1%81%D1%82%D0%B0%2C%2010-%D0%B9%20%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%80%D0%B0%D0%B9%D0%BE%D0%BD%2C%2052&amp;z=17&amp;l=map&amp;pt=44.2695%2C46.3088%2Cpm2rdm" title="LS Detailing на карте" allowfullscreen loading="lazy"></iframe>"""
 
-RATING_BADGE = """<a href="https://yandex.com/maps/-/CTQgrE~F" target="_blank" rel="noopener" class="rating-badge"><span class="rating-badge__star">★</span> <span class="rating-badge__text">5.0 на Яндекс Картах</span></a>"""
+TOPBAR_RATING = """<a href="https://yandex.com/maps/-/CTQgrE~F" target="_blank" rel="noopener" class="rating-badge">
+      <span class="rating-badge__star">★</span>
+      <span class="rating-badge__text">5.0 на Яндекс Картах</span>
+    </a>"""
 
 NAV_PAGES = [
     ("index.html", "Главная", "index"),
@@ -79,14 +82,26 @@ def render_nav(prefix="", active=None):
     return "\n".join(parts)
 
 
+def render_mobile_nav_extra(prefix=""):
+    return f"""        <div class="nav__mobile-extra">
+          <span class="topbar__hours">Ежедневно 10:00–19:00</span>
+          {TOPBAR_RATING}
+          <div class="socials topbar__socials">
+            {SOCIALS}
+          </div>
+          <a href="tel:+79618422227" class="topbar__phone">+7 (961) 842-22-27</a>
+          <a href="{prefix}contacts.html" class="header__cta">Записаться</a>
+        </div>"""
+
+
 def render_topbar(prefix=""):
     return f"""  <div class="topbar">
     <div class="container topbar__inner">
       <span class="topbar__hours">Ежедневно 10:00–19:00</span>
+      {TOPBAR_RATING}
       <div class="socials topbar__socials">
         {SOCIALS}
       </div>
-      {RATING_BADGE}
       <a href="tel:+79618422227" class="topbar__phone">+7 (961) 842-22-27</a>
     </div>
   </div>"""
@@ -94,18 +109,22 @@ def render_topbar(prefix=""):
 
 def render_header(prefix="", active=None):
     nav = render_nav(prefix, active)
+    mobile_extra = render_mobile_nav_extra(prefix)
+    logo_src = f"{prefix}images/logo.png"
     return f"""  <header class="header" id="header">
     <div class="container header__inner">
       <a href="{prefix}index.html" class="logo">
-        <div>
-          <div class="logo__mark">LS <span>Detailing</span></div>
-          <span class="logo__sub">Элиста</span>
-        </div>
+        <img src="{logo_src}" alt="LS Detailing" class="logo__mark" width="132" height="52">
       </a>
       <nav class="nav" id="nav">
 {nav}
+{mobile_extra}
       </nav>
       <a href="{prefix}contacts.html" class="header__cta">Записаться</a>
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span></button>
     </div>
   </header>"""
+
+
+def render_site_header(prefix="", active=None):
+    return render_topbar(prefix) + "\n" + render_header(prefix, active)

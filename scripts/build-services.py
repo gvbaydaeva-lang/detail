@@ -15,11 +15,16 @@ sys.path.insert(0, str(SCRIPTS))
 from site_common import (  # noqa: E402
     MAP_IFRAME,
     SOCIALS,
-    render_header,
-    render_topbar,
+    render_site_header,
     service_href,
 )
 from services_data import CATEGORIES, SERVICES  # noqa: E402
+from stage_icons import (  # noqa: E402
+    SERVICES_PAGE_HERO,
+    hero_image_for,
+    infer_stage_icon,
+    stage_icon_svg,
+)
 
 ROOT_PAGES = {
     "index.html": "index",
@@ -31,19 +36,27 @@ ROOT_PAGES = {
 }
 
 
+def merge_stages(stages):
+    merged = []
+    for stage in stages:
+        item = dict(stage)
+        item.setdefault("icon", infer_stage_icon(item["title"]))
+        merged.append(item)
+    return merged
+
+
 def render_stages(stages):
     items = []
-    for i, stage in enumerate(stages, 1):
+    for i, stage in enumerate(merge_stages(stages), 1):
         num = f"{i:02d}"
+        icon = stage_icon_svg(stage["icon"])
         items.append(f"""          <article class="service-stage reveal">
             <div class="service-stage__head">
               <span class="service-stage__num">{num}</span>
+              {icon}
               <h3 class="service-stage__title">{stage['title']}</h3>
             </div>
             <p class="service-stage__text">{stage['text']}</p>
-            <div class="service-stage__photo" aria-hidden="true">
-              <span class="service-stage__photo-label">Фото этапа</span>
-            </div>
           </article>""")
     return "\n".join(items)
 
@@ -61,6 +74,7 @@ def render_faq(faq):
 def render_service_page(slug, data):
     stages = render_stages(data["stages"])
     faq = render_faq(data["faq"])
+    hero_img = hero_image_for(slug, data["category"])
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -74,10 +88,9 @@ def render_service_page(slug, data):
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
-{render_topbar("../")}
-{render_header("../", "services")}
+{render_site_header("../", "services")}
   <main class="page-top">
-    <section class="service-hero">
+    <section class="service-hero service-hero--photo" style="background-image: url('../img/services/{hero_img}')">
       <div class="container">
         <a href="../services.html" class="service-back reveal">← Все услуги</a>
         <p class="service-hero__label reveal">{data['category']}</p>
@@ -180,14 +193,13 @@ def render_services_page():
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-{render_topbar()}
-{render_header(active="services")}
+{render_site_header(active="services")}
   <main class="page-top">
-    <section class="page-hero">
+    <section class="page-hero page-hero--photo" style="background-image: url('img/services/{SERVICES_PAGE_HERO}')">
       <div class="container reveal">
         <p class="page-hero__label">Услуги</p>
         <h1 class="page-hero__title">Полный спектр детейлинга</h1>
-        <p class="page-hero__desc">25 направлений в одном центре — от защиты кузова до перетяжки салона и дооснащения премиум-класса</p>
+        <p class="page-hero__desc">25+ направлений в одном центре — от защиты кузова до перетяжки салона и дооснащения премиум-класса</p>
       </div>
     </section>
 
@@ -235,8 +247,11 @@ def render_services_page():
 
 def patch_header_in_file(path, prefix="", active=None):
     text = path.read_text(encoding="utf-8")
-    new_header = render_header(prefix, active)
-    pattern = r'<header class="header" id="header">.*?</header>'
+    new_header = render_site_header(prefix, active)
+    pattern = (
+        r'(?:<div class="topbar">.*?</div>\s*)?'
+        r'<header class="(?:site-header|header)" id="header">.*?</header>'
+    )
     if not re.search(pattern, text, re.DOTALL):
         print(f"  SKIP header: {path.name}")
         return False
