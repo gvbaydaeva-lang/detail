@@ -1,91 +1,134 @@
 const REVIEWS = [
   {
+    id: 'alma-b',
     name: 'Alma B.',
     meta: 'Знаток города 3 уровня · 21 ноября 2025',
-    fullText: [
-      'Благодарю Мингияна и его команду за отличную работу с Range Rover. Устранили протечку люка, сделали химчистку, полировку и оклейку фар защитной плёнкой. Профессионалы своего дела, очень клиентоориентированный подход. Рекомендую!',
-    ],
-    photos: [{ src: 'img/reviews/review-02.png', alt: 'Range Rover после детейлинга' }],
+    rating: 5,
+    avatar: 'A',
+    text: 'Благодарю Мингияна и его команду за отличную работу с Range Rover. Устранили протечку люка, сделали химчистку, полировку и оклейку фар защитной плёнкой. Профессионалы своего дела, очень клиентоориентированный подход. Рекомендую!',
+    photo: 'img/reviews/review-02.png',
+    photoAlt: 'Range Rover после детейлинга',
   },
   {
+    id: 'evgeniy-kenzeev',
     name: 'Евгений Кензеев',
     meta: 'Знаток города 5 уровня · 19 февраля 2025',
-    fullText: [
-      'Обратился в LS Detailing, чтобы снять малярный скотч с кузова. Владелец Мингиян лично проконсультировал и подобрал оптимальный вариант работ.',
-      'Сделали полировку кузова, нанесли керамическое покрытие и провели химчистку салона. Всё на высшем уровне — видно, что люди знают своё дело.',
-      'Однозначно рекомендую LS detailing 👍 Результат в прикреплённых фотографиях.',
-    ],
-    photos: [{ src: 'img/reviews/review-01.png', alt: 'BMW E30 после полировки' }],
+    rating: 5,
+    avatar: 'Е',
+    text: 'Обратился в LS Detailing, чтобы снять малярный скотч с кузова. Владелец Мингиян лично проконсультировал и подобрал оптимальный вариант работ. Сделали полировку кузова, нанесли керамическое покрытие и провели химчистку салона. Всё на высшем уровне — видно, что люди знают своё дело. Однозначно рекомендую LS detailing.',
+    photo: 'img/reviews/review-01.png',
+    photoAlt: 'BMW E30 после полировки',
   },
   {
+    id: 'bair-sh',
     name: 'Баир Ш.',
     meta: 'Знаток города 3 уровня · 7 декабря 2025',
-    fullText: [
-      'Ребята мастера своего дела. Делал химчистку салона — теперь он как новый. Работой очень доволен ☝️ Всем рекомендую 👍',
-    ],
-    photos: [{ src: 'img/reviews/review-05.png', alt: 'Jeep после химчистки салона' }],
+    rating: 5,
+    avatar: 'Б',
+    text: 'Ребята мастера своего дела. Делал химчистку салона — теперь он как новый. Работой очень доволен. Всем рекомендую!',
+    photo: 'img/reviews/review-05.png',
+    photoAlt: 'Jeep после химчистки салона',
   },
   {
+    id: 'georgiy-m',
     name: 'Георгий М.',
     meta: 'Знаток города 4 уровня · 14 декабря 2024',
-    fullText: [
-      'Огромная благодарность DETAILING Car LS! Профессиональные консультации, адекватные цены и безупречное качество работ.',
-      'Сделали полировку, керамическое покрытие, защитную плёнку на фары, химчистку салона с разбором до металла, мойку двигателя. В подарок обработали лобовое стекло составом «Антидождь».',
-      'Машина выглядит как новая :) Рекомендую 100%!',
-    ],
-    photos: [{ src: 'img/reviews/review-06.png', alt: 'Toyota Camry после детейлинга' }],
+    rating: 5,
+    avatar: 'Г',
+    text: 'Огромная благодарность DETAILING Car LS! Профессиональные консультации, адекватные цены и безупречное качество. Сделали полировку, керамику, защитную плёнку на фары, химчистку салона с разбором до металла, мойку двигателя. В подарок обработали лобовое «Антидождём». Машина выглядит как новая. Рекомендую 100%!',
+    photo: 'img/reviews/review-06.png',
+    photoAlt: 'Toyota Camry после детейлинга',
   },
   {
+    id: 'nursultan',
     name: 'Нурсултан Нурсултанович',
     meta: 'Знаток города 4 уровня · 24 февраля 2025',
-    fullText: [
-      'Отличная работа: полировка кузова, нанесение керамического состава и обшивка рулевого колеса в натуру.',
-      'Отдельное спасибо Мингияну за внимание к деталям и профессиональный подход. Буду рекомендовать друзьям и знакомым.',
-    ],
-    photos: [{ src: 'img/reviews/review-07.png', alt: 'Toyota после полировки' }],
+    rating: 5,
+    avatar: 'Н',
+    text: 'Отличная работа: полировка кузова, нанесение керамического состава и обшивка рулевого колеса в натуру. Отдельное спасибо Мингияну за внимание к деталям. Буду рекомендовать друзьям и знакомым.',
+    photo: 'img/reviews/review-07.png',
+    photoAlt: 'Toyota после полировки',
   },
   {
+    id: 'bair-boldyrev',
     name: 'Баир Болдырев',
     meta: 'Знаток города 3 уровня · 8 октября 2024',
-    fullText: [
-      'Пользуюсь услугами LS Detailing уже 4 года — качество и скорость работы всегда на высоте.',
-      'Владелец постоянно улучшает студию и оборудование, видно, что ему действительно не всё равно. Каждый раз машина уезжает в идеальном состоянии.',
-      'Рекомендую всем, кто ценит профессиональный детейлинг в Элисте 👍',
-    ],
-    photos: [{ src: 'img/reviews/review-04.png', alt: 'Toyota Highlander и Volkswagen Jetta' }],
+    rating: 5,
+    avatar: 'Б',
+    text: 'Пользуюсь услугами уже 4 года — качество и скорость на высоте. Владелец постоянно улучшает студию, видно, что ему не всё равно. Каждый раз машина уезжает в идеальном состоянии. Рекомендую всем, кто ценит профессиональный детейлинг в Элисте.',
+    photo: 'img/reviews/review-04.png',
+    photoAlt: 'Toyota Highlander и Volkswagen Jetta',
   },
   {
+    id: 'chingiz',
     name: 'Чингиз',
     meta: 'Знаток города 4 уровня · 21 февраля 2025',
-    fullText: [
-      'Приехал восстановить помутневшие и пожелтевшие фары. Команда подошла профессионально, всё объяснили по этапам работ.',
-      'Сервис действительно клиентоориентированный — чувствуется забота о клиенте. Фары теперь как новые, ночью видимость стала намного лучше.',
-      'Очень рекомендую LS Detailing!',
-    ],
-    photos: [{ src: 'img/reviews/review-03.png', alt: 'Восстановленные фары' }],
+    rating: 5,
+    avatar: 'Ч',
+    text: 'Приехал восстановить помутневшие фары — команда подошла профессионально, всё объяснили по этапам. Сервис действительно клиентоориентированный. Фары теперь как новые, ночью видимость отличная. Очень рекомендую!',
+    photo: 'img/reviews/review-03.png',
+    photoAlt: 'Восстановленные фары',
   },
   {
+    id: 'usdmega',
     name: 'USDMega',
     meta: 'Знаток города 4 уровня · 4 марта 2025',
-    fullText: [
-      'На парковке кто-то задел машину — повредили крыло и бампер. Обратился в LS Detailing.',
-      'Ребята откликнулись сразу и буквально за полчаса отполировали повреждение — следов почти не осталось. Быстро, аккуратно, без лишних слов. Спасибо!',
-    ],
-    photos: [{ src: 'img/reviews/review-08.png', alt: 'Крыло после полировки' }],
+    rating: 5,
+    avatar: 'U',
+    text: 'На парковке задели крыло и бампер. Ребята из LS Detailing откликнулись сразу и за полчаса отполировали повреждение — следов почти не осталось. Быстро, аккуратно, без лишних слов.',
+    photo: 'img/reviews/review-08.png',
+    photoAlt: 'Крыло после полировки',
   },
   {
+    id: 'shon-sandzhiev',
     name: 'Shon Sandzhiev',
     meta: 'Знаток города 5 уровня · 13 февраля 2025',
-    fullText: [
-      'Заказал полный комплекс услуг в Detailing Car LS у Мингияна — результат превзошёл все ожидания.',
-      'Профессиональный подход, фото- и видеоотчёты на каждом этапе работ. Приятный бонус — ручка, вода и рамка для номера.',
-      'Очень достойный сервис. Рекомендую!',
-    ],
-    photos: [{ src: 'img/reviews/review-09.png', alt: 'Toyota Camry после детейлинга' }],
+    rating: 5,
+    avatar: 'S',
+    text: 'Заказал полный комплекс в Detailing Car LS у Мингияна — результат превзошёл ожидания. Профессиональный подход, фото- и видеоотчёты на каждом этапе. В подарок — ручка, вода и рамка номера. Очень достойный сервис, рекомендую!',
+    photo: 'img/reviews/review-09.png',
+    photoAlt: 'Toyota Camry после детейлинга',
   },
 ];
 
-const STARS_HTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>'.repeat(5);
+const STAR_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>';
+
+function renderStars(rating) {
+  return STAR_SVG.repeat(rating);
+}
+
+function renderReviewCard(review) {
+  return `
+    <article class="review-card" data-review-id="${review.id}" itemscope itemtype="https://schema.org/Review">
+      <div class="rc-top">
+        <div class="rc-avatar" aria-hidden="true">${review.avatar}</div>
+        <div>
+          <div class="rc-name" itemprop="author">${review.name}</div>
+          <div class="rc-meta">${review.meta}</div>
+        </div>
+      </div>
+      <div class="rc-stars" aria-label="${review.rating} из 5">${renderStars(review.rating)}</div>
+      <p class="review-card__text" itemprop="reviewBody">${review.text}</p>
+      <button type="button" class="review-card__more" data-review-id="${review.id}">Читать полностью →</button>
+    </article>
+  `;
+}
+
+function splitIntoColumns(items, columnCount) {
+  const perCol = Math.ceil(items.length / columnCount);
+  const columns = [];
+  for (let i = 0; i < columnCount; i += 1) {
+    columns.push(items.slice(i * perCol, (i + 1) * perCol));
+  }
+  return columns;
+}
+
+function renderReviewsGrid(grid) {
+  const columns = splitIntoColumns(REVIEWS, 3);
+  grid.innerHTML = columns
+    .map((col) => `<div class="col">${col.map(renderReviewCard).join('')}</div>`)
+    .join('');
+}
 
 let reviewsPageInitialized = false;
 
@@ -94,78 +137,66 @@ function initReviewsPage() {
   reviewsPageInitialized = true;
 
   const grid = document.getElementById('reviewsGrid');
-  const mobile = document.getElementById('reviewsMobile');
+  const modal = document.getElementById('reviewModal');
   const overlay = document.getElementById('reviewModalOverlay');
-  const modalBox = document.getElementById('reviewModalBox');
+  const closeBtn = document.getElementById('reviewModalClose');
+  const modalAvatar = document.getElementById('reviewModalAvatar');
+  const modalName = document.getElementById('reviewModalName');
+  const modalMeta = document.getElementById('reviewModalMeta');
+  const modalStars = document.getElementById('reviewModalStars');
+  const modalText = document.getElementById('reviewModalText');
+  const modalPhotoWrap = document.getElementById('reviewModalPhotoWrap');
+  const modalPhoto = document.getElementById('reviewModalPhoto');
 
-  if (!grid || !overlay || !modalBox) return;
+  if (!grid || !modal) return;
 
-  const cards = grid.querySelectorAll('.review-card');
-  cards.forEach((card, i) => {
-    card.dataset.index = String(i);
-  });
+  renderReviewsGrid(grid);
 
-  if (mobile && cards.length) {
-    mobile.replaceChildren();
-    cards.forEach((card) => {
-      mobile.appendChild(card.cloneNode(true));
-    });
-  }
+  const reviewsById = Object.fromEntries(REVIEWS.map((review) => [review.id, review]));
 
   const closeModal = () => {
-    overlay.classList.remove('active');
+    modal.classList.remove('is-open');
     document.body.style.overflow = '';
   };
 
-  const openModal = (index) => {
-    const review = REVIEWS[index];
+  const openModal = (id) => {
+    const review = reviewsById[id];
     if (!review) return;
 
-    const avatar = review.name.charAt(0).toUpperCase() || '?';
-    const textHtml = review.fullText.map((p) => `<p>${p}</p>`).join('');
-    const photosHtml = review.photos
-      .map((photo) => `<img src="${photo.src}" alt="${photo.alt}" loading="lazy">`)
-      .join('');
+    modalAvatar.textContent = review.avatar;
+    modalName.textContent = review.name;
+    modalMeta.textContent = review.meta;
+    modalStars.innerHTML = renderStars(review.rating);
+    modalStars.setAttribute('aria-label', `${review.rating} из 5`);
+    modalText.textContent = review.text;
 
-    modalBox.innerHTML = `
-      <button class="modal-close" type="button" aria-label="Закрыть">&times;</button>
-      <div class="rc-top">
-        <div class="rc-avatar" aria-hidden="true">${avatar}</div>
-        <div>
-          <div class="rc-name">${review.name}</div>
-          <div class="rc-meta">${review.meta}</div>
-        </div>
-      </div>
-      <div class="rc-stars" aria-label="5 из 5">${STARS_HTML}</div>
-      <div class="rc-text rc-text--modal">${textHtml}</div>
-      ${photosHtml ? `<div class="rc-photos rc-photos--modal">${photosHtml}</div>` : ''}
-    `;
+    if (review.photo) {
+      modalPhoto.src = review.photo;
+      modalPhoto.alt = review.photoAlt || '';
+      modalPhotoWrap.style.display = 'block';
+    } else {
+      modalPhoto.removeAttribute('src');
+      modalPhoto.alt = '';
+      modalPhotoWrap.style.display = 'none';
+    }
 
-    overlay.classList.add('active');
+    modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
   };
 
-  const onCardClick = (e) => {
-    const card = e.target.closest('.review-card');
-    if (!card) return;
-    const index = Number.parseInt(card.dataset.index, 10);
-    if (Number.isNaN(index)) return;
+  const onReviewOpen = (e) => {
+    const trigger = e.target.closest('[data-review-id]');
+    if (!trigger) return;
     e.preventDefault();
-    openModal(index);
+    openModal(trigger.dataset.reviewId);
   };
 
-  grid.addEventListener('click', onCardClick);
-  mobile?.addEventListener('click', onCardClick);
+  grid.addEventListener('click', onReviewOpen);
 
-  modalBox.addEventListener('click', (e) => {
-    if (e.target.closest('.modal-close')) closeModal();
-  });
-
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  });
+  closeBtn?.addEventListener('click', closeModal);
+  overlay?.addEventListener('click', closeModal);
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
 }
