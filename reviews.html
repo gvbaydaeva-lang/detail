@@ -184,18 +184,24 @@
     <div class="review-modal__content">
       <button class="review-modal__close" id="reviewModalClose" type="button" aria-label="Закрыть">&times;</button>
       <div class="review-modal__header">
-        <div class="review-modal__avatar" id="reviewModalAvatar"></div>
+        <div class="review-modal__avatar" id="reviewModalAvatar" aria-hidden="true"></div>
         <div>
           <p class="review-modal__name" id="reviewModalName"></p>
           <p class="review-modal__meta" id="reviewModalMeta"></p>
+          <p class="review-modal__date" id="reviewModalDate"></p>
         </div>
       </div>
       <div class="review-modal__stars" id="reviewModalStars"></div>
       <p class="review-modal__text" id="reviewModalText"></p>
-      <div class="review-modal__photo-wrap" id="reviewModalPhotoWrap">
-        <img class="review-modal__photo" id="reviewModalPhoto" src="" alt="" loading="lazy">
-      </div>
+      <div class="review-modal__photos" id="reviewModalPhotos" hidden></div>
     </div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lightboxClose" aria-label="Закрыть">&times;</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <img class="lightbox__img" id="lightboxImg" src="" alt="">
+    <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
 
   <script type="application/ld+json">

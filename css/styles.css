@@ -646,20 +646,32 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   overflow: hidden;
 }
 
-.page-hero--photo::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.15) 75%, rgba(0, 0, 0, 0) 100%);
-  pointer-events: none;
-}
-
 .page-hero--photo .container {
   position: relative;
   z-index: 1;
   width: 100%;
   padding-top: 48px;
   padding-bottom: 64px;
+}
+
+.page-hero--photo .container::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: none;
+  top: -40px;
+  bottom: -56px;
+  background: radial-gradient(
+    ellipse 85% 100% at 50% 100%,
+    rgba(0, 0, 0, 0.38) 0%,
+    rgba(0, 0, 0, 0.22) 42%,
+    rgba(0, 0, 0, 0.06) 68%,
+    transparent 88%
+  );
+  pointer-events: none;
+  z-index: -1;
 }
 
 .page-hero--photo .page-hero__label,
@@ -1355,6 +1367,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   font-size: 13.5px;
   line-height: 1.55;
   color: var(--text);
+  white-space: pre-line;
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
@@ -1502,6 +1515,12 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin-top: 2px;
 }
 
+.review-modal__date {
+  font-size: 13px;
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
 .review-modal__stars {
   display: flex;
   gap: 2px;
@@ -1521,19 +1540,32 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   white-space: pre-line;
 }
 
-.review-modal__photo-wrap {
-  display: none;
+.review-modal__photos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 16px;
 }
 
+.review-modal__photos[hidden] {
+  display: none;
+}
+
 .review-modal__photo {
-  width: 100%;
-  height: auto;
-  max-height: 280px;
+  flex: 1 1 calc(33.333% - 6px);
+  min-width: 88px;
+  max-width: calc(50% - 4px);
+  height: 140px;
   object-fit: cover;
   object-position: center;
   border-radius: 8px;
   border: 1px solid var(--border);
+  cursor: pointer;
+  transition: opacity 0.2s var(--ease);
+}
+
+.review-modal__photo:hover {
+  opacity: 0.88;
 }
 
 @media (max-width: 768px) {
@@ -2130,7 +2162,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 1100;
   background: rgba(0,0,0,0.92);
   display: flex;
   align-items: center;
@@ -2190,27 +2222,24 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .service-hero--photo {
-  position: relative;
-  min-height: 520px;
-  display: flex;
-  align-items: flex-end;
   padding: 0;
   border-bottom: none;
-  background-size: cover;
-  background-position: center;
-  color: #fff;
+  background: none;
   overflow: hidden;
 }
 
-.service-hero--photo::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0.2) 70%, rgba(0, 0, 0, 0) 100%);
-  pointer-events: none;
+.service-hero__media {
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: flex-end;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
 }
 
-.service-hero--photo .container {
+.service-hero__media .container {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -2218,8 +2247,44 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   padding-bottom: 64px;
 }
 
+.service-hero__content {
+  position: relative;
+  display: inline-block;
+  width: fit-content;
+  max-width: min(760px, 100%);
+  overflow: visible;
+}
+
+.service-hero__scrim {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    rgba(0, 0, 0, 0.62) 0%,
+    rgba(0, 0, 0, 0.62) 18%,
+    rgba(0, 0, 0, 0) 85%
+  );
+  backdrop-filter: blur(14px) brightness(0.55);
+  -webkit-backdrop-filter: blur(14px) brightness(0.55);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 18%, transparent 85%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, black 0%, black 18%, transparent 85%);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.service-hero__content > :not(.service-hero__scrim) {
+  position: relative;
+  z-index: 1;
+}
+
 .service-hero--photo .service-back {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
 }
 
 .service-hero--photo .service-back:hover {
@@ -2230,10 +2295,18 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .service-hero--photo .service-hero__title,
 .service-hero--photo .service-hero__intro {
   color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4), 0 2px 24px rgba(0, 0, 0, 0.2);
 }
 
 .service-hero--photo .service-hero__intro {
-  opacity: 0.92;
+  opacity: 1;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .service-hero__scrim {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 .service-hero__label {
@@ -2458,27 +2531,113 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 @media (max-width: 768px) {
   .hero {
-    min-height: calc(100vh - var(--header-h));
-  }
-
-  .hero__bg img {
-    object-position: 80% center;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: visible;
+    background: var(--bg-soft);
+    padding: 28px 20px 24px;
   }
 
   .hero__top-scrim {
-    height: 38%;
+    display: none;
   }
 
   .hero__inner {
-    min-height: calc(100vh - var(--header-h));
-    padding-top: 20px;
-    padding-bottom: 40px;
+    display: contents;
+  }
+
+  .hero__top {
+    order: 1;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0 0 16px;
+  }
+
+  .hero__mobile-label[hidden] {
+    display: block !important;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .hero__title {
+    color: var(--text);
+  }
+
+  .hero__subtitle {
+    color: var(--text-muted);
+    opacity: 1;
+  }
+
+  .hero__bg {
+    order: 2;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    background: #3a3a3a;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .hero__bg img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .hero__bottom {
+    order: 3;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 16px 0 0;
   }
 
   .hero__trust-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 0;
+    margin-top: 0;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .hero__trust-item {
+    display: block;
+    max-width: none;
+    padding: 12px 14px;
+    border-right: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .hero__trust-item:nth-child(2n) {
+    border-right: none;
+  }
+
+  .hero__trust-item:nth-child(n + 3) {
+    border-bottom: none;
+  }
+
+  .hero__trust-icon {
+    display: none;
+  }
+
+  .hero__trust-text {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.35;
+    text-shadow: none;
   }
 
   .hero__actions .btn {
@@ -2497,12 +2656,22 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   }
 
   .service-hero--photo {
+    min-height: 0;
+  }
+
+  .service-hero__media {
     min-height: 420px;
   }
 
-  .service-hero--photo .container {
+  .service-hero__media .container {
     padding-top: 28px;
     padding-bottom: 48px;
+  }
+
+  .service-hero__content {
+    display: block;
+    width: 100%;
+    max-width: 100%;
   }
 
   .service-stage__text {
@@ -2755,5 +2924,6 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 @media (max-width: 480px) {
   .container { padding: 0 16px; }
+  .hero { padding-left: 16px; padding-right: 16px; }
   .map-wrap { height: 300px; }
 }

@@ -90,12 +90,17 @@ def render_service_page(slug, data):
 <body>
 {render_site_header("../", "services")}
   <main class="page-top">
-    <section class="service-hero service-hero--photo" style="background-image: url('../img/services/{hero_img}')">
-      <div class="container">
-        <a href="../services.html" class="service-back reveal">← Все услуги</a>
-        <p class="service-hero__label reveal">{data['category']}</p>
-        <h1 class="service-hero__title reveal">{data['title']}</h1>
-        <p class="service-hero__intro reveal">{data['intro']}</p>
+    <section class="service-hero service-hero--photo">
+      <div class="service-hero__media" style="background-image: url('../img/services/{hero_img}')">
+        <div class="container">
+          <div class="service-hero__content reveal">
+            <div class="service-hero__scrim" aria-hidden="true"></div>
+            <a href="../services.html" class="service-back">← Все услуги</a>
+            <p class="service-hero__label">{data['category']}</p>
+            <h1 class="service-hero__title">{data['title']}</h1>
+            <p class="service-hero__intro">{data['intro']}</p>
+          </div>
+        </div>
       </div>
     </section>
 

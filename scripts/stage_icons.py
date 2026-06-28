@@ -67,38 +67,22 @@ STAGE_ICON_SVGS = {
     ),
 }
 
-CATEGORY_HERO_IMAGES = {
-    "Оклейка плёнкой": "keramika-zashchita.jpg",
-    "Полировка": "polirovka-kuzova.jpg",
-    "Детейлинг-уход": "deteyling-moyka.jpg",
-    "Малярные работы": "polirovka-kuzova.jpg",
-    "Перетяжка и реставрация": "himchistka.jpg",
-    "Дооснащение": "shumoizolyatsiya.jpg",
-}
+# Химчистка салона — единственная услуга со старым общим фото (не менять).
+HIMCHISTKA_HERO = "himchistka.jpg"
 
-SERVICE_HERO_OVERRIDES = {
-    "himchistka-salona": "himchistka.jpg",
-    "polirovka-detaley-salona": "himchistka.jpg",
-    "pereyazhka-salona": "himchistka.jpg",
-    "pereyazhka-rulya": "himchistka.jpg",
-    "pereyazhka-sideniy": "himchistka.jpg",
-    "zvezdnoye-nebo": "himchistka.jpg",
-    "shumoizolyatsiya": "shumoizolyatsiya.jpg",
-    "bronirovanie-lobovogo": "tonirovka.jpg",
-    "multimediya": "tonirovka.jpg",
-    "chistka-radiatora": "deteyling-moyka.jpg",
-    "chistka-podkapotnogo": "deteyling-moyka.jpg",
-    "deteyling-mototsiklov": "deteyling-moyka.jpg",
-    "uhod-krysha-kabrioleta": "deteyling-moyka.jpg",
-    "karbon": "keramika-zashchita.jpg",
-    "setka-radiatora": "deteyling-moyka.jpg",
-}
+SERVICES_PAGE_HERO = "heroes/polirovka-kuzova.jpg"
 
-SERVICES_PAGE_HERO = "polirovka-kuzova.jpg"
+_PHOTO_STYLE = (
+    "Professional automotive detailing photography, clean modern workshop, "
+    "cinematic soft lighting, muted neutral palette, car only black white gray or silver, "
+    "no yellow or red vehicles, no human faces, wide 16:9 horizontal composition, photorealistic"
+)
 
 
-def hero_image_for(slug, category):
-    return SERVICE_HERO_OVERRIDES.get(slug, CATEGORY_HERO_IMAGES.get(category, "polirovka-kuzova.jpg"))
+def hero_image_for(slug, category=None):
+    if slug == "himchistka-salona":
+        return HIMCHISTKA_HERO
+    return f"heroes/{slug}.jpg"
 
 
 def infer_stage_icon(title):
