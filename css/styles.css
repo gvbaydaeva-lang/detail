@@ -1250,6 +1250,67 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: var(--text-faint);
 }
 
+/* Reviews preview (index.html) */
+.reviews-row--preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.review-card--preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 32px;
+  border: 1px solid var(--border);
+  cursor: default;
+  box-shadow: none;
+  transition: none;
+}
+
+.review-card--preview:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.review-card--preview .review-card__stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 16px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.review-card--preview .review-card__stars svg {
+  width: 14px;
+  height: 14px;
+}
+
+.review-card--preview .review-card__text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1 1 auto;
+  margin-bottom: 0;
+}
+
+.review-card--preview .review-card__author {
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
 /* ---- Reviews page ---- */
 .page-hero .reviews-rating {
   margin-top: 20px;
@@ -2132,10 +2193,19 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .footer__grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1.8fr 1fr 1fr 1.3fr;
   gap: 40px;
   margin-bottom: 48px;
 }
+
+.footer__map {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 280px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+}
+.footer__map iframe { width: 100%; height: 100%; border: 0; }
 
 .footer__brand p {
   font-size: 14px;
@@ -2528,7 +2598,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
   .adv-grid { grid-template-columns: repeat(2, 1fr); }
   .blog-grid { grid-template-columns: repeat(2, 1fr); }
-  .works-row, .reviews-row { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
+  .works-row, .reviews-row--preview { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
   .gallery-masonry { grid-template-columns: repeat(2, 1fr); }
   .gallery-masonry .work-card--wide { grid-column: span 1; }
 
@@ -2536,6 +2606,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .contacts-grid { grid-template-columns: 1fr; }
   .cta-banner__inner { grid-template-columns: 1fr; padding: 48px 32px; }
   .footer__grid { grid-template-columns: 1fr 1fr; }
+  .footer__map { height: 240px; }
 
   .service-row { grid-template-columns: 1fr; gap: 12px; padding: 28px; }
 
@@ -3064,6 +3135,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .form { grid-template-columns: 1fr; }
   .form__submit { width: 100%; min-width: unset; }
   .footer__grid { grid-template-columns: 1fr; }
+  .footer__map { height: 260px; order: 1; }
   .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
 
   .reviews-rating__row {
@@ -3080,4 +3152,5 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .hero { padding-left: 16px; padding-right: 16px; }
   .topbar__inner { padding-left: 12px; padding-right: 12px; gap: 12px; }
   .map-wrap { height: 300px; }
+  .footer__map { height: 220px; }
 }
