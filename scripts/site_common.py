@@ -95,14 +95,32 @@ def render_mobile_nav_extra(prefix=""):
 
 
 def render_topbar(prefix=""):
+    logo_src = f"{prefix}images/logo.png"
+    map_pin = (
+        '<svg class="topbar__rating-icon" width="14" height="14" viewBox="0 0 24 24" '
+        'fill="currentColor" aria-hidden="true">'
+        '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z"/>'
+        "</svg>"
+    )
     return f"""  <div class="topbar">
     <div class="container topbar__inner">
-      <span class="topbar__hours">Ежедневно 10:00–19:00</span>
-      {TOPBAR_RATING}
-      <div class="socials topbar__socials">
-        {SOCIALS}
+      <div class="topbar__desktop">
+        <span class="topbar__hours">Ежедневно 10:00–19:00</span>
+        {TOPBAR_RATING}
+        <div class="socials topbar__socials">
+          {SOCIALS}
+        </div>
+        <a href="tel:+79618422227" class="topbar__phone">+7 (961) 842-22-27</a>
       </div>
-      <a href="tel:+79618422227" class="topbar__phone">+7 (961) 842-22-27</a>
+      <a href="{prefix}index.html" class="logo topbar__logo">
+        <img src="{logo_src}" alt="LS Detailing" class="logo__mark" width="132" height="52">
+      </a>
+      <a href="https://yandex.com/maps/-/CTQgrE~F" target="_blank" rel="noopener" class="topbar__rating">
+        {map_pin}
+        <span class="topbar__rating-score"><span class="topbar__rating-star">★</span> 5.0</span>
+      </a>
+      <a href="tel:+79618422227" class="topbar__phone topbar__phone--mobile">+7 (961) 842-22-27</a>
+      <button class="burger topbar__burger" id="burgerMobile" type="button" aria-label="Меню"><span></span><span></span></button>
     </div>
   </div>"""
 

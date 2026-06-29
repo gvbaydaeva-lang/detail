@@ -13,9 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function initHeader() {
   const header = document.getElementById('header');
+  const topbar = document.querySelector('.topbar');
   if (!header) return;
-  const onScroll = () => header.classList.toggle('header--scrolled', window.scrollY > 20);
+  const mq = window.matchMedia('(max-width: 768px)');
+  const onScroll = () => {
+    const scrolled = window.scrollY > 20;
+    if (mq.matches && topbar) {
+      topbar.classList.toggle('topbar--scrolled', scrolled);
+      header.classList.remove('header--scrolled');
+    } else {
+      header.classList.toggle('header--scrolled', scrolled);
+      topbar?.classList.remove('topbar--scrolled');
+    }
+  };
   window.addEventListener('scroll', onScroll, { passive: true });
+  mq.addEventListener('change', onScroll);
   onScroll();
 }
 
@@ -70,14 +82,18 @@ function initServicesDropdown() {
 }
 
 function initMobileNav() {
-  const burger = document.getElementById('burger');
+  const burgers = document.querySelectorAll('.burger');
   const nav = document.getElementById('nav');
-  if (!burger || !nav) return;
+  if (!burgers.length || !nav) return;
+
+  const setNavOpen = (open) => {
+    burgers.forEach((burger) => burger.classList.toggle('burger--active', open));
+    nav.classList.toggle('nav--open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
 
   const closeNav = () => {
-    burger.classList.remove('burger--active');
-    nav.classList.remove('nav--open');
-    document.body.style.overflow = '';
+    setNavOpen(false);
     const dropdown = document.getElementById('navServices');
     if (dropdown) {
       dropdown.classList.remove('nav__dropdown--open');
@@ -86,10 +102,10 @@ function initMobileNav() {
     }
   };
 
-  burger.addEventListener('click', () => {
-    burger.classList.toggle('burger--active');
-    nav.classList.toggle('nav--open');
-    document.body.style.overflow = nav.classList.contains('nav--open') ? 'hidden' : '';
+  burgers.forEach((burger) => {
+    burger.addEventListener('click', () => {
+      setNavOpen(!nav.classList.contains('nav--open'));
+    });
   });
 
   nav.querySelectorAll('.nav__link:not(.nav__dropdown-trigger), .nav__dropdown-link, .nav__dropdown-all').forEach((link) => {
