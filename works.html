@@ -9,6 +9,53 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .work-card--video .work-card__video-thumb {
+      width: 100%;
+      height: 100%;
+      min-height: 280px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .work-card__play {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s;
+    }
+
+    .work-card--video:hover .work-card__play {
+      border-color: rgba(255,255,255,1);
+    }
+
+    .work-card__video-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .gallery-masonry .work-card:last-child:nth-child(3n - 1) {
+      grid-column-end: -1;
+    }
+    .gallery-masonry .work-card:last-child:nth-child(3n + 1) {
+      grid-column: 2;
+    }
+  </style>
 </head>
 <body>
 
@@ -144,8 +191,8 @@
     <section class="page-hero">
       <div class="container reveal">
         <p class="page-hero__label">Наши работы</p>
-        <h1 class="page-hero__title">Что получают наши клиенты</h1>
-        <p class="page-hero__desc">Реальные автомобили из нашего бокса. Нажмите на фото, чтобы увидеть детали</p>
+        <h1 class="page-hero__title">Из любого состояния — в идеал</h1>
+        <p class="page-hero__desc">Реальные работы без ретуши: полировка, восстановление после аварии, кузовной ремонт. Смотрите сами</p>
       </div>
     </section>
 
@@ -166,6 +213,20 @@
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
               <span class="work-card__title">Полная защита</span>
               <span class="work-card__desc">Кузов под надёжной защитой от влаги и реагентов</span>
+            </figcaption>
+          </figure>
+          <figure class="work-card work-card--video reveal"
+                  data-lightbox-type="video"
+                  data-lightbox-src="images/video-tiguan.mp4">
+            <div class="work-card__video-thumb">
+              <div class="work-card__play">
+                <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+                  <path d="M1 1l12 7L1 15V1z" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <figcaption class="work-card__overlay">
+              <span class="work-card__tag">Volkswagen Tiguan · Полное преображение</span>
             </figcaption>
           </figure>
           <figure class="work-card reveal" data-lightbox="фото7.webp">
@@ -198,6 +259,21 @@
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg>
               <span class="work-card__title">Готовы к выдаче</span>
               <span class="work-card__desc">Финальная проверка перед тем, как авто вернётся к владельцу</span>
+            </figcaption>
+          </figure>
+          <figure class="work-card work-card--video reveal"
+                  data-lightbox-type="video"
+                  data-lightbox-src="images/video-corolla.mp4">
+            <div class="work-card__video-thumb">
+              <span class="work-card__video-badge">После ДТП</span>
+              <div class="work-card__play">
+                <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+                  <path d="M1 1l12 7L1 15V1z" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <figcaption class="work-card__overlay">
+              <span class="work-card__tag">Toyota Corolla · Восстановление после аварии</span>
             </figcaption>
           </figure>
           <figure class="work-card reveal" data-lightbox="фото12.webp">
