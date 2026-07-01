@@ -10,45 +10,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    .work-card--video .work-card__video-thumb {
-      width: 100%;
-      height: 100%;
-      min-height: 280px;
-      background: #1a1a1a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .work-card__play {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(255,255,255,0.75);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: border-color 0.2s;
-    }
-
-    .work-card--video:hover .work-card__play {
-      border-color: rgba(255,255,255,1);
-    }
-
-    .work-card__video-badge {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.04em;
-    }
-
     .gallery-masonry .work-card:last-child:nth-child(3n - 1) {
       grid-column-end: -1;
     }
@@ -217,8 +178,10 @@
           </figure>
           <figure class="work-card work-card--video reveal"
                   data-lightbox-type="video"
-                  data-lightbox-src="images/video-tiguan.mp4">
+                  data-lightbox-src="images/video-corolla.mp4">
             <div class="work-card__video-thumb">
+              <video autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-corolla.mp4"></video>
+              <span class="work-card__video-badge">После ДТП</span>
               <div class="work-card__play">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
                   <path d="M1 1l12 7L1 15V1z" fill="white"/>
@@ -226,7 +189,7 @@
               </div>
             </div>
             <figcaption class="work-card__overlay">
-              <span class="work-card__tag">Volkswagen Tiguan · Полное преображение</span>
+              <span class="work-card__tag">Toyota Corolla · Восстановление после аварии</span>
             </figcaption>
           </figure>
           <figure class="work-card reveal" data-lightbox="фото7.webp">
@@ -263,9 +226,9 @@
           </figure>
           <figure class="work-card work-card--video reveal"
                   data-lightbox-type="video"
-                  data-lightbox-src="images/video-corolla.mp4">
+                  data-lightbox-src="images/video-tiguan.mp4">
             <div class="work-card__video-thumb">
-              <span class="work-card__video-badge">После ДТП</span>
+              <video autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-tiguan.mp4"></video>
               <div class="work-card__play">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
                   <path d="M1 1l12 7L1 15V1z" fill="white"/>
@@ -273,7 +236,7 @@
               </div>
             </div>
             <figcaption class="work-card__overlay">
-              <span class="work-card__tag">Toyota Corolla · Восстановление после аварии</span>
+              <span class="work-card__tag">Volkswagen Tiguan · Полное преображение</span>
             </figcaption>
           </figure>
           <figure class="work-card reveal" data-lightbox="фото12.webp">

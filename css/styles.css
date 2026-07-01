@@ -1227,6 +1227,49 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: #fff;
 }
 
+.work-card--video .work-card__video-thumb {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.work-card__play {
+  position: relative;
+  z-index: 1;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s;
+}
+
+.work-card--video:hover .work-card__play {
+  border-color: rgba(255,255,255,1);
+}
+
+.work-card__video-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
 /* Full gallery page */
 .gallery-masonry {
   display: grid;
