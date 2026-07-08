@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  initPageBackNav();
   initHeader();
   initServicesDropdown();
   initMobileNav();
@@ -10,6 +11,47 @@ document.addEventListener('DOMContentLoaded', () => {
   initPhoneMask();
   initServiceHeroScrim();
 });
+
+function initPageBackNav() {
+  const main = document.querySelector('main');
+  const title = main?.querySelector('h1');
+  const path = window.location.pathname.replace(/\\/g, '/');
+  const pageName = path.split('/').pop() || 'index.html';
+  if (!main || !title || pageName === 'index.html') return;
+
+  const isServicePage = path.includes('/services/');
+  const isArticlePage = path.includes('/articles/');
+  const homeHref = isServicePage || isArticlePage ? '../index.html' : 'index.html';
+  const backFallbackHref = isServicePage
+    ? '../services.html'
+    : isArticlePage
+      ? '../useful.html'
+      : homeHref;
+
+  const nav = document.createElement('nav');
+  nav.className = 'page-back-nav';
+  nav.setAttribute('aria-label', 'Навигация по странице');
+  nav.innerHTML = `
+    <a href="${homeHref}" class="page-back-nav__link">Главная</a>
+    <span class="page-back-nav__separator" aria-hidden="true">/</span>
+    <a href="${backFallbackHref}" class="page-back-nav__link" data-history-back>← Назад</a>
+  `;
+
+  title.parentNode.insertBefore(nav, title);
+
+  const oldServiceBack = main.querySelector('.service-back');
+  if (oldServiceBack) oldServiceBack.remove();
+
+  const oldArticleBack = main.querySelector('.article-page > .container > .article-back');
+  if (oldArticleBack) oldArticleBack.remove();
+
+  nav.querySelector('[data-history-back]')?.addEventListener('click', (event) => {
+    if (window.history.length > 1) {
+      event.preventDefault();
+      window.history.back();
+    }
+  });
+}
 
 function initHeader() {
   const header = document.getElementById('header');
