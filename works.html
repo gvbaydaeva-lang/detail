@@ -17,6 +17,78 @@
       grid-column: 2;
     }
   </style>
+
+  <link rel="canonical" href="https://ls-detailing.ru/works.html">
+  <script type="application/ld+json" data-seo-graph>
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://ls-detailing.ru/#website",
+      "url": "https://ls-detailing.ru/",
+      "name": "LS Detailing",
+      "inLanguage": "ru-RU",
+      "publisher": {
+        "@id": "https://ls-detailing.ru/#business"
+      }
+    },
+    {
+      "@type": "AutoRepair",
+      "@id": "https://ls-detailing.ru/#business",
+      "name": "LS Detailing",
+      "url": "https://ls-detailing.ru/",
+      "image": "https://ls-detailing.ru/images/hero-main-1920.webp",
+      "telephone": "+7-961-842-22-27",
+      "priceRange": "₽₽",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Элиста",
+        "addressRegion": "Республика Калмыкия",
+        "streetAddress": "10-я улица, 52",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 46.286834,
+        "longitude": 44.257262
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "10:00",
+        "closes": "19:00"
+      },
+      "sameAs": [
+        "https://yandex.com/maps/-/CTQgrE~F",
+        "https://www.instagram.com/detailing_car_ls"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://ls-detailing.ru/works.html#webpage",
+      "url": "https://ls-detailing.ru/works.html",
+      "name": "Работы — LS Detailing",
+      "description": "Галерея работ LS Detailing — результаты детейлинга в Элисте.",
+      "inLanguage": "ru-RU",
+      "isPartOf": {
+        "@id": "https://ls-detailing.ru/#website"
+      },
+      "about": {
+        "@id": "https://ls-detailing.ru/#business"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
 
@@ -147,6 +219,14 @@
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span></button>
     </div>
   </header>
+  <aside class="quick-contact" aria-label="Быстрая связь">
+    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+      <span aria-hidden="true">WA</span><span class="quick-contact__text">WhatsApp</span>
+    </a>
+    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram">
+      <span aria-hidden="true">TG</span><span class="quick-contact__text">Telegram</span>
+    </a>
+  </aside>
 
   <main class="page-top">
     <section class="page-hero">
@@ -159,8 +239,25 @@
 
     <section class="section">
       <div class="container">
+        <div class="work-filters" data-work-filters aria-label="Фильтр работ">
+          <div class="work-filters__group" role="group" aria-label="По типу услуги">
+            <span class="work-filters__label">Услуга</span>
+            <button type="button" class="work-filter work-filter--active" data-filter-kind="category" data-filter="all" aria-pressed="true">Все</button>
+            <button type="button" class="work-filter" data-filter-kind="category" data-filter="polishing" aria-pressed="false">Полировка</button>
+            <button type="button" class="work-filter" data-filter-kind="category" data-filter="protection" aria-pressed="false">Защита</button>
+            <button type="button" class="work-filter" data-filter-kind="category" data-filter="repair" aria-pressed="false">Восстановление</button>
+            <button type="button" class="work-filter" data-filter-kind="category" data-filter="process" aria-pressed="false">Процесс</button>
+          </div>
+          <div class="work-filters__group" role="group" aria-label="По марке автомобиля">
+            <span class="work-filters__label">Марка</span>
+            <button type="button" class="work-filter work-filter--active" data-filter-kind="brand" data-filter="all" aria-pressed="true">Все</button>
+            <button type="button" class="work-filter" data-filter-kind="brand" data-filter="toyota" aria-pressed="false">Toyota</button>
+            <button type="button" class="work-filter" data-filter-kind="brand" data-filter="bmw" aria-pressed="false">BMW</button>
+            <button type="button" class="work-filter" data-filter-kind="brand" data-filter="audi" aria-pressed="false">Audi</button>
+          </div>
+        </div>
         <div class="gallery-masonry" id="gallery">
-          <figure class="work-card reveal" data-lightbox="фото2.webp">
+          <figure class="work-card reveal" data-lightbox="фото2.webp" data-work-category="polishing" data-work-brand="hyundai">
             <img src="фото2.webp" alt="Hyundai Sonata после детейлинга" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg>
@@ -168,7 +265,7 @@
               <span class="work-card__desc">Кузов как из салона — глубокий цвет и чистота линий</span>
             </figcaption>
           </figure>
-          <figure class="work-card work-card--tall reveal" data-lightbox="фото6.webp">
+          <figure class="work-card work-card--tall reveal" data-lightbox="фото6.webp" data-work-category="protection" data-work-brand="audi">
             <img src="фото6.webp" alt="Audi Q5 после детейлинга" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
@@ -176,11 +273,11 @@
               <span class="work-card__desc">Кузов под надёжной защитой от влаги и реагентов</span>
             </figcaption>
           </figure>
-          <figure class="work-card work-card--video reveal"
+          <figure class="work-card work-card--video reveal" data-work-category="repair" data-work-brand="toyota"
                   data-lightbox-type="video"
                   data-lightbox-src="images/video-corolla.mp4">
             <div class="work-card__video-thumb">
-              <video autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-corolla.mp4"></video>
+              <video muted loop playsinline preload="none" poster="фото10.webp" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-corolla.mp4"></video>
               <span class="work-card__video-badge">После ДТП</span>
               <div class="work-card__play">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
@@ -192,7 +289,7 @@
               <span class="work-card__tag">Toyota Corolla · Восстановление после аварии</span>
             </figcaption>
           </figure>
-          <figure class="work-card reveal" data-lightbox="фото7.webp">
+          <figure class="work-card reveal" data-lightbox="фото7.webp" data-work-category="interior" data-work-brand="hyundai">
             <img src="фото7.webp" alt="Hyundai Sonata после детейлинга" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C8 8 5 12 5 15.5a7 7 0 0014 0C19 12 16 8 12 2z"/></svg>
@@ -200,7 +297,7 @@
               <span class="work-card__desc">Ни разводов, ни пыли — идеальная подготовка к показу</span>
             </figcaption>
           </figure>
-          <figure class="work-card work-card--wide reveal" data-lightbox="фото8.webp">
+          <figure class="work-card work-card--wide reveal" data-lightbox="фото8.webp" data-work-category="polishing" data-work-brand="bmw">
             <img src="фото8.webp" alt="BMW E30 после детейлинга" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 3.5"/></svg>
@@ -208,7 +305,7 @@
               <span class="work-card__desc">Бережное восстановление цвета и блеска редкого авто</span>
             </figcaption>
           </figure>
-          <figure class="work-card reveal" data-lightbox="фото10.webp">
+          <figure class="work-card reveal" data-lightbox="фото10.webp" data-work-category="process polishing" data-work-brand="toyota">
             <img src="фото10.webp" alt="Toyota Corolla — процесс полировки" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14.7 6.3a3 3 0 010 4.2l-7 7-4-4 7-7a3 3 0 014.2 0z"/><path d="M3 21l3-1 1-3"/></svg>
@@ -216,7 +313,7 @@
               <span class="work-card__desc">Каждый сантиметр кузова — под личным вниманием мастера</span>
             </figcaption>
           </figure>
-          <figure class="work-card reveal" data-lightbox="фото3.webp">
+          <figure class="work-card reveal" data-lightbox="фото3.webp" data-work-category="process" data-work-brand="toyota audi">
             <img src="фото3.webp" alt="Toyota Camry и Audi в боксе" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg>
@@ -224,11 +321,11 @@
               <span class="work-card__desc">Финальная проверка перед тем, как авто вернётся к владельцу</span>
             </figcaption>
           </figure>
-          <figure class="work-card work-card--video reveal"
+          <figure class="work-card work-card--video reveal" data-work-category="repair" data-work-brand="volkswagen"
                   data-lightbox-type="video"
                   data-lightbox-src="images/video-tiguan.mp4">
             <div class="work-card__video-thumb">
-              <video autoplay muted loop playsinline style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-tiguan.mp4"></video>
+              <video muted loop playsinline preload="none" poster="фото12.webp" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-tiguan.mp4"></video>
               <div class="work-card__play">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
                   <path d="M1 1l12 7L1 15V1z" fill="white"/>
@@ -239,7 +336,7 @@
               <span class="work-card__tag">Volkswagen Tiguan · Полное преображение</span>
             </figcaption>
           </figure>
-          <figure class="work-card reveal" data-lightbox="фото12.webp">
+          <figure class="work-card reveal" data-lightbox="фото12.webp" data-work-category="protection" data-work-brand="toyota">
             <img src="фото12.webp" alt="Toyota Highlander после детейлинга" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/></svg>
@@ -247,7 +344,7 @@
               <span class="work-card__desc">Насыщенный чёрный цвет сохранён без единого изъяна</span>
             </figcaption>
           </figure>
-          <figure class="work-card reveal" data-lightbox="фото13.webp">
+          <figure class="work-card reveal" data-lightbox="фото13.webp" data-work-category="process" data-work-brand="bmw">
             <img src="фото13.webp" alt="BMW 5 и BMW X3 в боксе" loading="lazy">
             <figcaption class="work-card__overlay">
               <svg class="work-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2l2.4 7.2H22l-6 4.4 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.4h7.6z"/></svg>

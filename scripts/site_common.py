@@ -145,4 +145,12 @@ def render_header(prefix="", active=None):
 
 
 def render_site_header(prefix="", active=None):
-    return render_topbar(prefix) + "\n" + render_header(prefix, active)
+    quick_contacts = """  <aside class="quick-contact" aria-label="Быстрая связь">
+    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+      <span aria-hidden="true">WA</span><span class="quick-contact__text">WhatsApp</span>
+    </a>
+    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram">
+      <span aria-hidden="true">TG</span><span class="quick-contact__text">Telegram</span>
+    </a>
+  </aside>"""
+    return render_topbar(prefix) + "\n" + render_header(prefix, active) + "\n" + quick_contacts

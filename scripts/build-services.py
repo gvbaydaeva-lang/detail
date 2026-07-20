@@ -29,10 +29,13 @@ from stage_icons import (  # noqa: E402
 ROOT_PAGES = {
     "index.html": "index",
     "services.html": "services",
+    "advantages.html": "advantages",
     "works.html": "works",
     "useful.html": "useful",
+    "reviews.html": "reviews",
     "about.html": "about",
     "contacts.html": "contacts",
+    "privacy.html": None,
 }
 
 
@@ -71,9 +74,73 @@ def render_faq(faq):
     return "\n".join(items)
 
 
+def related_services(slug, data, limit=3):
+    same_category = [
+        (candidate_slug, candidate)
+        for candidate_slug, candidate in SERVICES.items()
+        if candidate_slug != slug and candidate["category"] == data["category"]
+    ]
+    fallback = [
+        (candidate_slug, candidate)
+        for candidate_slug, candidate in SERVICES.items()
+        if candidate_slug != slug and candidate["category"] != data["category"]
+    ]
+    return (same_category + fallback)[:limit]
+
+
+def render_related_services(slug, data):
+    cards = []
+    for related_slug, related in related_services(slug, data):
+        cards.append(f"""          <article class="related-service-card">
+            <p class="related-service-card__category">{related['category']}</p>
+            <h3 class="related-service-card__title">{related['title']}</h3>
+            <p class="related-service-card__text">{related['excerpt']}</p>
+            <a href="{related_slug}.html" class="btn btn--ghost">Подробнее</a>
+          </article>""")
+    return "\n".join(cards)
+
+
+def render_lead_form(service_title):
+    return f"""            <form class="form lead-form service-lead-form" novalidate>
+              <input type="hidden" name="service" value="{service_title}">
+              <div class="form__honeypot" aria-hidden="true">
+                <label>Не заполняйте это поле<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+              </div>
+              <div class="form__group">
+                <label class="form__label">Имя
+                  <input type="text" name="name" class="form__input" autocomplete="name" required>
+                </label>
+              </div>
+              <div class="form__group">
+                <label class="form__label">Телефон
+                  <input type="tel" name="phone" class="form__input" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
+                </label>
+              </div>
+              <div class="form__group">
+                <label class="form__label">Тип обращения
+                  <select name="request_type" class="form__input">
+                    <option value="Запись">Записаться</option>
+                    <option value="Консультация">Получить консультацию</option>
+                    <option value="Обратный звонок">Заказать обратный звонок</option>
+                  </select>
+                </label>
+              </div>
+              <div class="form__group form__group--full">
+                <label class="form__label">Комментарий
+                  <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и удобное время"></textarea>
+                </label>
+              </div>
+              <button type="submit" class="btn btn--dark form__submit">Отправить заявку</button>
+              <p class="form__privacy">Нажимая кнопку, вы соглашаетесь с <a href="../privacy.html">политикой обработки персональных данных</a>.</p>
+              <div class="form-status" data-form-status role="status" aria-live="polite"></div>
+            </form>"""
+
+
 def render_service_page(slug, data):
     stages = render_stages(data["stages"])
     faq = render_faq(data["faq"])
+    related = render_related_services(slug, data)
+    lead_form = render_lead_form(data["title"])
     hero_img = hero_image_for(slug, data["category"])
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -127,13 +194,26 @@ def render_service_page(slug, data):
       </div>
     </section>
 
+    <section class="section related-services">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="section-head__tag">Комплексный подход</p>
+          <h2 class="section-head__title">С этой услугой часто выбирают</h2>
+          <p class="section-head__desc">Подберём совместимые работы так, чтобы каждый этап усиливал результат.</p>
+        </div>
+        <div class="related-services__grid reveal">
+{related}
+        </div>
+      </div>
+    </section>
+
     <section class="service-cta">
       <div class="container">
         <div class="service-cta__inner reveal">
           <div class="service-cta__content">
-            <h2 class="service-cta__title">Хотите придать авто идеальный вид?</h2>
-            <p class="service-cta__text">Запишитесь на консультацию — оценим состояние и предложим оптимальное решение без лишних работ.</p>
-            <a href="../contacts.html" class="btn btn--dark">Записаться</a>
+            <h2 class="service-cta__title">Записаться на «{data['title']}»</h2>
+            <p class="service-cta__text">Оценим состояние автомобиля, уточним сроки и предложим решение без лишних работ.</p>
+{lead_form}
           </div>
           <div class="service-cta__map">
             <p class="contact-block__label">Как нас найти</p>
@@ -179,7 +259,7 @@ def render_services_page():
             </div>
             <div class="service-row__actions">
               <a href="{href}" class="btn btn--ghost">Подробнее</a>
-              <a href="contacts.html" class="btn btn--dark">Записаться</a>
+              <a href="contacts.html?service={svc['slug']}" class="btn btn--dark">Записаться</a>
             </div>
           </article>""")
         sections.append("\n".join(rows))
@@ -256,6 +336,7 @@ def patch_header_in_file(path, prefix="", active=None):
     pattern = (
         r'(?:<div class="topbar">.*?</div>\s*)?'
         r'<header class="(?:site-header|header)" id="header">.*?</header>'
+        r'(?:\s*<aside class="quick-contact".*?</aside>)?'
     )
     if not re.search(pattern, text, re.DOTALL):
         print(f"  SKIP header: {path.name}")

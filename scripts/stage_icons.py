@@ -70,7 +70,7 @@ STAGE_ICON_SVGS = {
 # Химчистка салона — единственная услуга со старым общим фото (не менять).
 HIMCHISTKA_HERO = "himchistka.jpg"
 
-SERVICES_PAGE_HERO = "heroes/polirovka-kuzova.jpg"
+SERVICES_PAGE_HERO = "optimized/polirovka-kuzova.webp"
 
 _PHOTO_STYLE = (
     "Professional automotive detailing photography, clean modern workshop, "
@@ -80,9 +80,7 @@ _PHOTO_STYLE = (
 
 
 def hero_image_for(slug, category=None):
-    if slug == "himchistka-salona":
-        return HIMCHISTKA_HERO
-    return f"heroes/{slug}.jpg"
+    return f"optimized/{slug}.webp"
 
 
 def infer_stage_icon(title):

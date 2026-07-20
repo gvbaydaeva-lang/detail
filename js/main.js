@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initAdvantageStagger();
   initLightbox();
-  initForm();
+  initForms();
+  initWorksFilters();
   initCounters();
   initPhoneMask();
   initServiceHeroScrim();
@@ -293,33 +294,209 @@ function initLightbox() {
   });
 }
 
-function initForm() {
-  const form = document.getElementById('consultForm');
-  const success = document.getElementById('formSuccess');
-  if (!form) return;
+function initForms() {
+  const forms = document.querySelectorAll('.lead-form, #consultForm');
+  if (!forms.length) return;
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = form.querySelector('#name');
-    const phone = form.querySelector('#phone');
-    let valid = true;
+  const params = new URLSearchParams(window.location.search);
+  const trackingFields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+  trackingFields.forEach((key) => {
+    const value = params.get(key);
+    if (value) sessionStorage.setItem(`ls_${key}`, value);
+  });
 
-    [name, phone].forEach((f) => {
-      f.classList.remove('form__input--error');
-      if (!f.value.trim()) { f.classList.add('form__input--error'); valid = false; }
+  const endpoint =
+    document.querySelector('meta[name="ls-form-endpoint"]')?.content?.trim() ||
+    window.LS_FORM_ENDPOINT ||
+    '';
+
+  forms.forEach((form) => {
+    const status = form.querySelector('[data-form-status]') || createFormStatus(form);
+    const submit = form.querySelector('[type="submit"]');
+    const serviceField = form.querySelector('[name="service"]');
+
+    if (serviceField) {
+      const requestedService = params.get('service');
+      const requestedServiceLink = requestedService
+        ? Array.from(document.querySelectorAll('a[href*="services/"]')).find((link) => {
+            const filename = link.getAttribute('href')?.split('/').pop();
+            return filename === `${requestedService}.html`;
+          })
+        : null;
+      serviceField.value =
+        requestedServiceLink?.textContent?.trim() ||
+        requestedService ||
+        serviceField.value ||
+        document.querySelector('h1')?.textContent?.trim() ||
+        '';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearFormErrors(form);
+
+      const payload = collectLeadPayload(form, trackingFields);
+      const invalid = validateLeadForm(form, payload);
+      if (invalid) {
+        setFormStatus(status, 'Проверьте выделенные поля.', 'error');
+        invalid.focus();
+        return;
+      }
+
+      if (payload.website) return;
+
+      if (!endpoint) {
+        const whatsappUrl = buildWhatsAppLeadUrl(payload);
+        setFormStatus(
+          status,
+          `Онлайн-отправка подключается. <a href="${whatsappUrl}" target="_blank" rel="noopener">Отправьте эту заявку в WhatsApp</a>.`,
+          'warning'
+        );
+        return;
+      }
+
+      submit?.setAttribute('disabled', '');
+      if (submit) submit.textContent = 'Отправляем…';
+      setFormStatus(status, 'Отправляем заявку…', 'pending');
+
+      try {
+        await sendLeadWithRetry(endpoint, payload);
+        form.reset();
+        if (serviceField) serviceField.value = payload.service;
+        setFormStatus(status, 'Спасибо! Заявка отправлена. Мы свяжемся с вами в рабочее время.', 'success');
+      } catch (error) {
+        const whatsappUrl = buildWhatsAppLeadUrl(payload);
+        setFormStatus(
+          status,
+          `Не удалось отправить автоматически. <a href="${whatsappUrl}" target="_blank" rel="noopener">Отправить заявку в WhatsApp</a>.`,
+          'error'
+        );
+      } finally {
+        submit?.removeAttribute('disabled');
+        if (submit) submit.textContent = submit.dataset.label || 'Отправить заявку';
+      }
     });
 
-    if (phone.value.replace(/\D/g, '').length < 11) {
-      phone.classList.add('form__input--error');
-      valid = false;
-    }
+    if (submit && !submit.dataset.label) submit.dataset.label = submit.textContent.trim();
+  });
+}
 
-    if (!valid) return;
+function createFormStatus(form) {
+  const status = document.createElement('div');
+  status.className = 'form-status';
+  status.dataset.formStatus = '';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+  form.appendChild(status);
+  return status;
+}
 
-    if (success) {
-      form.hidden = true;
-      success.hidden = false;
+function collectLeadPayload(form, trackingFields) {
+  const data = new FormData(form);
+  const payload = Object.fromEntries(data.entries());
+  payload.page_url = window.location.href;
+  payload.page_title = document.title;
+  payload.referrer = document.referrer || '';
+  payload.submitted_at = new Date().toISOString();
+  trackingFields.forEach((key) => {
+    payload[key] = payload[key] || sessionStorage.getItem(`ls_${key}`) || '';
+  });
+  return payload;
+}
+
+function clearFormErrors(form) {
+  form.querySelectorAll('.form__input--error').forEach((field) => {
+    field.classList.remove('form__input--error');
+    field.removeAttribute('aria-invalid');
+  });
+}
+
+function validateLeadForm(form, payload) {
+  const required = Array.from(form.querySelectorAll('[required]'));
+  let firstInvalid = null;
+
+  required.forEach((field) => {
+    const value = String(payload[field.name] || '').trim();
+    const phoneInvalid = field.type === 'tel' && value.replace(/\D/g, '').length < 11;
+    if (!value || phoneInvalid) {
+      field.classList.add('form__input--error');
+      field.setAttribute('aria-invalid', 'true');
+      if (!firstInvalid) firstInvalid = field;
     }
+  });
+
+  return firstInvalid;
+}
+
+async function sendLeadWithRetry(endpoint, payload) {
+  let lastError;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+      if (!response.ok) throw new Error(`Lead endpoint returned ${response.status}`);
+      return;
+    } catch (error) {
+      lastError = error;
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+  throw lastError;
+}
+
+function buildWhatsAppLeadUrl(payload) {
+  const lines = [
+    'Здравствуйте! Хочу оставить заявку в LS Detailing.',
+    payload.request_type ? `Тип: ${payload.request_type}` : '',
+    payload.service ? `Услуга: ${payload.service}` : '',
+    payload.name ? `Имя: ${payload.name}` : '',
+    payload.phone ? `Телефон: ${payload.phone}` : '',
+    payload.comment ? `Комментарий: ${payload.comment}` : '',
+    `Страница: ${payload.page_url}`,
+    payload.utm_campaign ? `Кампания: ${payload.utm_campaign}` : '',
+  ].filter(Boolean);
+  return `https://wa.me/79618422227?text=${encodeURIComponent(lines.join('\n'))}`;
+}
+
+function setFormStatus(status, message, type) {
+  status.className = `form-status form-status--${type}`;
+  status.innerHTML = message;
+}
+
+function initWorksFilters() {
+  const filters = document.querySelector('[data-work-filters]');
+  const gallery = document.getElementById('gallery');
+  if (!filters || !gallery) return;
+
+  const cards = Array.from(gallery.querySelectorAll('[data-work-category]'));
+  const selected = { category: 'all', brand: 'all' };
+  filters.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-filter]');
+    if (!button) return;
+    const kind = button.dataset.filterKind;
+    const value = button.dataset.filter;
+    selected[kind] = value;
+
+    filters.querySelectorAll(`button[data-filter-kind="${kind}"]`).forEach((item) => {
+      const active = item === button;
+      item.classList.toggle('work-filter--active', active);
+      item.setAttribute('aria-pressed', String(active));
+    });
+
+    cards.forEach((card) => {
+      const categories = (card.dataset.workCategory || '').split(' ');
+      const brands = (card.dataset.workBrand || '').split(' ');
+      const categoryMatch = selected.category === 'all' || categories.includes(selected.category);
+      const brandMatch = selected.brand === 'all' || brands.includes(selected.brand);
+      card.hidden = !(categoryMatch && brandMatch);
+    });
   });
 }
 
@@ -345,22 +522,22 @@ function initCounters() {
 }
 
 function initPhoneMask() {
-  const input = document.getElementById('phone');
-  if (!input) return;
+  const inputs = document.querySelectorAll('input[type="tel"]');
+  inputs.forEach((input) => {
+    input.addEventListener('input', (e) => {
+      let d = e.target.value.replace(/\D/g, '');
+      if (d.startsWith('8')) d = '7' + d.slice(1);
+      if (d.length && !d.startsWith('7')) d = '7' + d;
+      d = d.slice(0, 11);
 
-  input.addEventListener('input', (e) => {
-    let d = e.target.value.replace(/\D/g, '');
-    if (d.startsWith('8')) d = '7' + d.slice(1);
-    if (d.length && !d.startsWith('7')) d = '7' + d;
-    d = d.slice(0, 11);
-
-    let f = '';
-    if (d.length) f = '+7';
-    if (d.length > 1) f += ' (' + d.slice(1, 4);
-    if (d.length > 4) f += ') ' + d.slice(4, 7);
-    if (d.length > 7) f += '-' + d.slice(7, 9);
-    if (d.length > 9) f += '-' + d.slice(9, 11);
-    e.target.value = f;
+      let f = '';
+      if (d.length) f = '+7';
+      if (d.length > 1) f += ' (' + d.slice(1, 4);
+      if (d.length > 4) f += ') ' + d.slice(4, 7);
+      if (d.length > 7) f += '-' + d.slice(7, 9);
+      if (d.length > 9) f += '-' + d.slice(9, 11);
+      e.target.value = f;
+    });
   });
 }
 

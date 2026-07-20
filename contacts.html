@@ -9,6 +9,78 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+
+  <link rel="canonical" href="https://ls-detailing.ru/contacts.html">
+  <script type="application/ld+json" data-seo-graph>
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://ls-detailing.ru/#website",
+      "url": "https://ls-detailing.ru/",
+      "name": "LS Detailing",
+      "inLanguage": "ru-RU",
+      "publisher": {
+        "@id": "https://ls-detailing.ru/#business"
+      }
+    },
+    {
+      "@type": "AutoRepair",
+      "@id": "https://ls-detailing.ru/#business",
+      "name": "LS Detailing",
+      "url": "https://ls-detailing.ru/",
+      "image": "https://ls-detailing.ru/images/hero-main-1920.webp",
+      "telephone": "+7-961-842-22-27",
+      "priceRange": "₽₽",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Элиста",
+        "addressRegion": "Республика Калмыкия",
+        "streetAddress": "10-я улица, 52",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 46.286834,
+        "longitude": 44.257262
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "10:00",
+        "closes": "19:00"
+      },
+      "sameAs": [
+        "https://yandex.com/maps/-/CTQgrE~F",
+        "https://www.instagram.com/detailing_car_ls"
+      ]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://ls-detailing.ru/contacts.html#webpage",
+      "url": "https://ls-detailing.ru/contacts.html",
+      "name": "Контакты — LS Detailing",
+      "description": "Контакты LS Detailing — адрес в Элисте, телефон, мессенджеры, форма заявки.",
+      "inLanguage": "ru-RU",
+      "isPartOf": {
+        "@id": "https://ls-detailing.ru/#website"
+      },
+      "about": {
+        "@id": "https://ls-detailing.ru/#business"
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
 
@@ -139,6 +211,14 @@
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span></button>
     </div>
   </header>
+  <aside class="quick-contact" aria-label="Быстрая связь">
+    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+      <span aria-hidden="true">WA</span><span class="quick-contact__text">WhatsApp</span>
+    </a>
+    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram">
+      <span aria-hidden="true">TG</span><span class="quick-contact__text">Telegram</span>
+    </a>
+  </aside>
 
   <main class="page-top">
     <section class="page-hero">
@@ -194,14 +274,29 @@
         <div class="form-wrap reveal">
           <h2 class="form-wrap__title">Получите консультацию по вашему автомобилю</h2>
           <p class="form-wrap__desc">Оставьте заявку — перезвоним и ответим на все вопросы</p>
-          <form class="form" id="consultForm" novalidate>
+          <form class="form lead-form" id="consultForm" novalidate>
+            <div class="form__honeypot" aria-hidden="true">
+              <label>Не заполняйте это поле<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            </div>
             <div class="form__group">
               <label for="name" class="form__label">Имя</label>
-              <input type="text" id="name" name="name" class="form__input" placeholder="Ваше имя" required>
+              <input type="text" id="name" name="name" class="form__input" placeholder="Ваше имя" autocomplete="name" required>
             </div>
             <div class="form__group">
               <label for="phone" class="form__label">Телефон</label>
-              <input type="tel" id="phone" name="phone" class="form__input" placeholder="+7 (___) ___-__-__" required>
+              <input type="tel" id="phone" name="phone" class="form__input" placeholder="+7 (___) ___-__-__" autocomplete="tel" required>
+            </div>
+            <div class="form__group">
+              <label for="requestType" class="form__label">Тип обращения</label>
+              <select id="requestType" name="request_type" class="form__input">
+                <option value="Консультация">Получить консультацию</option>
+                <option value="Запись">Записаться</option>
+                <option value="Обратный звонок">Заказать обратный звонок</option>
+              </select>
+            </div>
+            <div class="form__group">
+              <label for="service" class="form__label">Услуга</label>
+              <input type="text" id="service" name="service" class="form__input" placeholder="Например, полировка кузова">
             </div>
             <div class="form__group form__group--full">
               <label for="comment" class="form__label">Комментарий</label>
@@ -209,12 +304,8 @@
             </div>
             <button type="submit" class="btn btn--dark form__submit">Получить консультацию</button>
             <p class="form__privacy">Нажимая кнопку, вы соглашаетесь на обработку персональных данных и принимаете условия <a href="privacy.html">политики конфиденциальности</a>.</p>
+            <div class="form-status" data-form-status role="status" aria-live="polite"></div>
           </form>
-          <div class="form-success" id="formSuccess" hidden>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <h3>Заявка отправлена</h3>
-            <p>Мы свяжемся с вами в ближайшее время</p>
-          </div>
         </div>
       </div>
     </section>

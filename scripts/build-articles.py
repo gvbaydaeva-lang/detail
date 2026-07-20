@@ -11,6 +11,7 @@ ARTICLES_DIR = ROOT / "articles"
 
 sys.path.insert(0, str(SCRIPTS))
 from site_common import SOCIALS, render_site_header  # noqa: E402
+from services_data import SERVICES  # noqa: E402
 
 ARTICLES = [
     {
@@ -258,6 +259,21 @@ ARTICLES = [
     },
 ]
 
+ARTICLE_SERVICES = {
+    "podgotovka-k-zime": ["polirovka-kuzova", "himchistka-salona", "okleika-antigraviynaya"],
+    "mify-o-polirovke": ["polirovka-kuzova", "okleika-antigraviynaya"],
+    "keramika-ili-vosk": ["polirovka-kuzova", "okleika-antigraviynaya"],
+    "pocarapali-mashinu": ["polirovka-kuzova", "pokraska", "pdr"],
+    "skolko-derzhitsya-bronya": ["okleika-antigraviynaya", "bronirovanie-lobovogo"],
+    "zapah-v-salone": ["himchistka-salona", "chistka-podkapotnogo"],
+    "potertosti-salona": ["polirovka-detaley-salona", "pereyazhka-salona", "pereyazhka-rulya"],
+    "premiumnyy-vid": ["polirovka-kuzova", "himchistka-salona", "okleika-antigraviynaya"],
+    "oshibki-vybora-studii": ["polirovka-kuzova", "okleika-antigraviynaya"],
+    "himchistka-zachem": ["himchistka-salona", "polirovka-detaley-salona"],
+    "detailing-pered-prodazhey": ["polirovka-kuzova", "himchistka-salona", "chistka-podkapotnogo"],
+    "skolko-derzhitsya-polirovka": ["polirovka-kuzova", "okleika-antigraviynaya"],
+}
+
 
 def render_section(section):
     if len(section) == 2 and isinstance(section[1], str):
@@ -268,8 +284,25 @@ def render_section(section):
     return f'          <h2>{h}</h2>\n          <ul class="article-content__list">\n{lis}\n          </ul>\n'
 
 
+def render_article_services(article):
+    cards = []
+    for slug in ARTICLE_SERVICES.get(article["slug"], []):
+        service = SERVICES[slug]
+        cards.append(f"""            <article class="article-related__card">
+              <p class="article-related__category">{service['category']}</p>
+              <h3>{service['title']}</h3>
+              <p>{service['excerpt']}</p>
+              <div class="article-related__actions">
+                <a href="../services/{slug}.html" class="btn btn--ghost">Об услуге</a>
+                <a href="../contacts.html?service={slug}" class="btn btn--dark">Записаться</a>
+              </div>
+            </article>""")
+    return "\n".join(cards)
+
+
 def render_article(article):
     body = "\n".join(render_section(s) for s in article["sections"])
+    related = render_article_services(article)
     return f"""<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -297,6 +330,13 @@ def render_article(article):
           <p class="article-content__lead">{article['intro']}</p>
 {body}
         </div>
+        <section class="article-related reveal" aria-labelledby="articleRelatedTitle">
+          <p class="section-head__tag">По теме статьи</p>
+          <h2 id="articleRelatedTitle">Подходящие услуги</h2>
+          <div class="article-related__grid">
+{related}
+          </div>
+        </section>
         <section class="article-contact reveal">
           <h2 class="article-contact__title">LS Detailing — детейлинг-центр в Элисте</h2>
           <div class="article-contact__grid">
@@ -316,7 +356,7 @@ def render_article(article):
           </div>
           <div class="article-contact__actions">
             <a href="../useful.html" class="btn btn--ghost">← Назад к полезному</a>
-            <a href="../contacts.html" class="btn btn--dark">Записаться на услугу</a>
+            <a href="../contacts.html?service={ARTICLE_SERVICES.get(article['slug'], [''])[0]}" class="btn btn--dark">Записаться на услугу</a>
           </div>
         </section>
       </div>
@@ -388,7 +428,7 @@ def render_useful_page():
           <p>Премиальный детейлинг-центр в Элисте.</p>
           <div class="socials socials--footer" style="margin-top:20px">{SOCIALS}</div>
         </div>
-        <div><h4 class="footer__heading">Навигация</h4><a href="../services.html" class="footer__link">Услуги</a><a href="../advantages.html" class="footer__link">Преимущества</a><a href="../works.html" class="footer__link">Работы</a><a href="../useful.html" class="footer__link">Полезное</a><a href="../about.html" class="footer__link">О нас</a><a href="../contacts.html" class="footer__link">Контакты</a></div>
+        <div><h4 class="footer__heading">Навигация</h4><a href="services.html" class="footer__link">Услуги</a><a href="advantages.html" class="footer__link">Преимущества</a><a href="works.html" class="footer__link">Работы</a><a href="useful.html" class="footer__link">Полезное</a><a href="about.html" class="footer__link">О нас</a><a href="contacts.html" class="footer__link">Контакты</a></div>
         <div><h4 class="footer__heading">Контакты</h4><a href="tel:+79618422227" class="footer__link">+7 (961) 842-22-27</a><p class="footer__link">Республика Калмыкия, г. Элиста, 10 улица, д. 52</p></div>
       </div>
       <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p><a href="privacy.html" class="footer__link">Политика конфиденциальности</a></div>
