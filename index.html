@@ -218,6 +218,9 @@
     <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram">
       <span aria-hidden="true">TG</span><span class="quick-contact__text">Telegram</span>
     </a>
+    <a href="https://max.ru/u/f9LHodD0cOIuJfGnlIDorPs9KmvAuaXCx5b0g_xDXPa1e5oa1pMcjjTLu1k" class="quick-contact__link quick-contact__link--max" target="_blank" rel="noopener" aria-label="Написать в MAX">
+      <span aria-hidden="true">M</span><span class="quick-contact__text">MAX</span>
+    </a>
   </aside>
 
   <main class="page-top">
@@ -486,7 +489,7 @@
                   data-lightbox-type="video"
                   data-lightbox-src="images/video-corolla.mp4">
             <div class="work-card__video-thumb">
-              <video muted loop playsinline preload="none" poster="фото10.webp" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;" src="images/video-corolla.mp4"></video>
+              <video muted loop playsinline preload="none" poster="images/corolla-after-accident.webp" class="work-card__video" src="images/video-corolla.mp4"></video>
               <span class="work-card__video-badge">После ДТП</span>
               <div class="work-card__play">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
@@ -554,19 +557,27 @@
     </section>
 
     <!-- Lead form -->
-    <section class="form-section" id="consultation">
+    <section class="form-section form-section--home" id="consultation">
       <div class="container">
-        <div class="form-wrap reveal">
-          <h2 class="form-wrap__title">Подберём комплекс для вашего автомобиля</h2>
-          <p class="form-wrap__desc">Оставьте телефон и коротко опишите задачу — уточним состояние автомобиля, сроки и стоимость.</p>
-          <form class="form lead-form" novalidate>
+        <div class="form-wrap form-wrap--home reveal">
+          <div class="form-wrap__intro">
+            <p class="form-wrap__eyebrow">Запись в LS Detailing</p>
+            <h2 class="form-wrap__title">Подберём комплекс для вашего автомобиля</h2>
+            <p class="form-wrap__desc">Расскажите о задаче — уточним состояние автомобиля, предложим подходящие работы и сориентируем по стоимости.</p>
+            <ul class="form-wrap__benefits" aria-label="Преимущества консультации">
+              <li>Ответим и уточним детали</li>
+              <li>Согласуем удобное время</li>
+              <li>Без навязанных услуг</li>
+            </ul>
+          </div>
+          <form class="form form--home lead-form" novalidate>
             <input type="hidden" name="service" value="Подбор комплекса услуг">
             <div class="form__honeypot" aria-hidden="true">
               <label>Не заполняйте это поле<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
             </div>
             <div class="form__group">
               <label class="form__label">Имя
-                <input type="text" name="name" class="form__input" autocomplete="name" required>
+                <input type="text" name="name" class="form__input" autocomplete="name" placeholder="Как к вам обращаться" required>
               </label>
             </div>
             <div class="form__group">
@@ -574,7 +585,7 @@
                 <input type="tel" name="phone" class="form__input" autocomplete="tel" placeholder="+7 (___) ___-__-__" required>
               </label>
             </div>
-            <div class="form__group">
+            <div class="form__group form__group--full">
               <label class="form__label">Тип обращения
                 <select name="request_type" class="form__input">
                   <option value="Консультация">Получить консультацию</option>
@@ -588,7 +599,7 @@
                 <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и желаемые работы"></textarea>
               </label>
             </div>
-            <button type="submit" class="btn btn--dark form__submit">Отправить заявку</button>
+            <button type="submit" class="btn btn--dark form__submit">Получить консультацию</button>
             <p class="form__privacy">Нажимая кнопку, вы принимаете условия <a href="privacy.html">политики обработки персональных данных</a>.</p>
             <div class="form-status" data-form-status role="status" aria-live="polite"></div>
           </form>
