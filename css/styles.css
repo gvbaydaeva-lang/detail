@@ -618,37 +618,56 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   }
 }
 
-/* ---- Page hero (inner pages) ---- */
-.page-back-nav {
+/* ---- Breadcrumbs ---- */
+.breadcrumbs {
   position: relative;
-  z-index: 2;
+  z-index: 3;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+
+.breadcrumbs__list {
   display: flex;
   align-items: center;
   gap: 9px;
-  margin-bottom: 18px;
+  min-height: 48px;
+  margin: 0;
+  padding: 10px 0;
+  overflow: hidden;
+  list-style: none;
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.page-back-nav__link {
+.breadcrumbs__item {
+  min-width: 0;
+}
+
+.breadcrumbs__link {
   color: inherit;
   text-decoration: none;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
 }
 
-.page-back-nav__link:hover {
-  opacity: 0.62;
+.breadcrumbs__link:hover {
+  color: var(--accent);
 }
 
-.page-back-nav__separator {
-  opacity: 0.45;
+.breadcrumbs__separator {
+  flex: 0 0 auto;
+  color: var(--text-faint);
 }
 
-.service-hero--photo .page-back-nav,
-.advantages__hero .page-back-nav {
-  color: rgba(255, 255, 255, 0.88);
+.breadcrumbs__current {
+  display: block;
+  overflow: hidden;
+  color: var(--text);
+  text-overflow: ellipsis;
 }
+
+/* ---- Page hero (inner pages) ---- */
 
 .page-hero {
   padding: 56px 0 64px;

@@ -19,6 +19,7 @@ from site_common import (  # noqa: E402
     service_href,
 )
 from services_data import CATEGORIES, SERVICES  # noqa: E402
+from breadcrumbs import apply_breadcrumbs  # noqa: E402
 from stage_icons import (  # noqa: E402
     SERVICES_PAGE_HERO,
     hero_image_for,
@@ -147,6 +148,7 @@ def render_service_page(slug, data):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="../js/https-redirect.js"></script>
   <meta name="description" content="{data['excerpt']}">
   <title>{data['title']} — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -235,7 +237,7 @@ def render_service_page(slug, data):
       </div>
     </div>
   </footer>
-  <script src="../js/main.js"></script>
+  <script src="../js/main.js?v=6"></script>
 </body>
 </html>
 """
@@ -270,6 +272,7 @@ def render_services_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/https-redirect.js"></script>
   <meta name="description" content="Услуги LS Detailing — оклейка, полировка, химчистка, малярные работы, перетяжка и дооснащение в Элисте.">
   <title>Услуги — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -324,7 +327,7 @@ def render_services_page():
       <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p><a href="privacy.html" class="footer__link">Политика конфиденциальности</a></div>
     </div>
   </footer>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>
 """
@@ -367,11 +370,17 @@ def main():
 
     for slug, data in SERVICES.items():
         out = SERVICES_DIR / f"{slug}.html"
-        out.write_text(render_service_page(slug, data), encoding="utf-8")
+        out.write_text(
+            apply_breadcrumbs(render_service_page(slug, data), f"services/{slug}.html"),
+            encoding="utf-8",
+        )
         print(f"Written services/{slug}.html")
 
     services_path = ROOT / "services.html"
-    services_path.write_text(render_services_page(), encoding="utf-8")
+    services_path.write_text(
+        apply_breadcrumbs(render_services_page(), "services.html"),
+        encoding="utf-8",
+    )
     print("Written services.html")
 
     sync_all_headers()

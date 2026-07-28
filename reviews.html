@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/https-redirect.js"></script>
   <meta name="description" content="Отзывы клиентов LS Detailing на Яндекс.Картах — рейтинг 5.0, более 100 отзывов.">
   <title>Отзывы — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,6 +78,26 @@
       "about": {
         "@id": "https://ls-detailing.ru/#business"
       }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json" data-breadcrumb-schema>
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Главная",
+      "item": "https://ls-detailing.ru/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Отзывы",
+      "item": "https://ls-detailing.ru/reviews.html"
     }
   ]
 }
@@ -221,6 +242,16 @@
   </aside>
 
   <main class="page-top">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки" data-breadcrumbs>
+      <div class="container">
+        <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="index.html">Главная</a></li>
+        <li class="breadcrumbs__separator" aria-hidden="true">/</li>
+        <li class="breadcrumbs__item"><span class="breadcrumbs__current" aria-current="page">Отзывы</span></li>
+        </ol>
+      </div>
+    </nav>
+
     <section class="page-hero">
       <div class="container reveal">
         <p class="page-hero__label">Отзывы</p>
@@ -319,7 +350,7 @@
   }
   </script>
 
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=6"></script>
   <script src="js/reviews-page.js"></script>
   <script>document.addEventListener('DOMContentLoaded', initReviewsPage);</script>
 </body>

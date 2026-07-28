@@ -12,6 +12,7 @@ ARTICLES_DIR = ROOT / "articles"
 sys.path.insert(0, str(SCRIPTS))
 from site_common import SOCIALS, render_site_header  # noqa: E402
 from services_data import SERVICES  # noqa: E402
+from breadcrumbs import apply_breadcrumbs  # noqa: E402
 
 ARTICLES = [
     {
@@ -308,6 +309,7 @@ def render_article(article):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="../js/https-redirect.js"></script>
   <meta name="description" content="{article['excerpt']}">
   <title>{article['title']} — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -370,7 +372,7 @@ def render_article(article):
       </div>
     </div>
   </footer>
-  <script src="../js/main.js"></script>
+  <script src="../js/main.js?v=6"></script>
 </body>
 </html>
 """
@@ -395,6 +397,7 @@ def render_useful_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/https-redirect.js"></script>
   <meta name="description" content="Полезные статьи о детейлинге от LS Detailing — советы по уходу за автомобилем в Элисте.">
   <title>Полезные детейлинги — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -434,7 +437,7 @@ def render_useful_page():
       <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p><a href="privacy.html" class="footer__link">Политика конфиденциальности</a></div>
     </div>
   </footer>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>
 """
@@ -444,10 +447,16 @@ def main():
     ARTICLES_DIR.mkdir(parents=True, exist_ok=True)
     for article in ARTICLES:
         path = ARTICLES_DIR / f"{article['slug']}.html"
-        path.write_text(render_article(article), encoding="utf-8")
+        path.write_text(
+            apply_breadcrumbs(render_article(article), f"articles/{article['slug']}.html"),
+            encoding="utf-8",
+        )
         print(f"Written {path.name}")
     useful_path = ROOT / "useful.html"
-    useful_path.write_text(render_useful_page(), encoding="utf-8")
+    useful_path.write_text(
+        apply_breadcrumbs(render_useful_page(), "useful.html"),
+        encoding="utf-8",
+    )
     print("Written useful.html")
 
 

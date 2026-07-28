@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="js/https-redirect.js"></script>
   <meta name="description" content="Галерея работ LS Detailing — результаты детейлинга в Элисте.">
   <title>Работы — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,6 +86,26 @@
       "about": {
         "@id": "https://ls-detailing.ru/#business"
       }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json" data-breadcrumb-schema>
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Главная",
+      "item": "https://ls-detailing.ru/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Работы",
+      "item": "https://ls-detailing.ru/works.html"
     }
   ]
 }
@@ -229,6 +250,16 @@
   </aside>
 
   <main class="page-top">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки" data-breadcrumbs>
+      <div class="container">
+        <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="index.html">Главная</a></li>
+        <li class="breadcrumbs__separator" aria-hidden="true">/</li>
+        <li class="breadcrumbs__item"><span class="breadcrumbs__current" aria-current="page">Работы</span></li>
+        </ol>
+      </div>
+    </nav>
+
     <section class="page-hero">
       <div class="container reveal">
         <p class="page-hero__label">Наши работы</p>
@@ -394,6 +425,6 @@
     <img class="lightbox__img" id="lightboxImg" src="" alt="">
     <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Вперёд"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
-  <script src="js/main.js"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>

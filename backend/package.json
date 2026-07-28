@@ -1,0 +1,13 @@
+{
+  "name": "ls-detailing-leads-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node test/smoke.js"
+  }
+}

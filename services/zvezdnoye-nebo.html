@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="../js/https-redirect.js"></script>
   <meta name="description" content="Установка потолка «звёздное небо» с оптоволокном. Индивидуальные узоры и количество «звёзд».">
   <title>Звёздное небо — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,6 +96,32 @@
       "provider": {
         "@id": "https://ls-detailing.ru/#business"
       }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json" data-breadcrumb-schema>
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Главная",
+      "item": "https://ls-detailing.ru/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Услуги",
+      "item": "https://ls-detailing.ru/services.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Звёздное небо",
+      "item": "https://ls-detailing.ru/services/zvezdnoye-nebo.html"
     }
   ]
 }
@@ -237,12 +264,23 @@
     </a>
   </aside>
   <main class="page-top">
+    <nav class="breadcrumbs" aria-label="Хлебные крошки" data-breadcrumbs>
+      <div class="container">
+        <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="../index.html">Главная</a></li>
+        <li class="breadcrumbs__separator" aria-hidden="true">/</li>
+        <li class="breadcrumbs__item"><a class="breadcrumbs__link" href="../services.html">Услуги</a></li>
+        <li class="breadcrumbs__separator" aria-hidden="true">/</li>
+        <li class="breadcrumbs__item"><span class="breadcrumbs__current" aria-current="page">Звёздное небо</span></li>
+        </ol>
+      </div>
+    </nav>
+
     <section class="service-hero service-hero--photo">
       <div class="service-hero__media" style="background-image: url('../img/services/optimized/zvezdnoye-nebo.webp')">
         <div class="container">
           <div class="service-hero__content reveal">
             <div class="service-hero__scrim" aria-hidden="true"></div>
-            <a href="../services.html" class="service-back">← Все услуги</a>
             <p class="service-hero__label">Дооснащение</p>
             <h1 class="service-hero__title">Звёздное небо</h1>
             <p class="service-hero__intro">Штатный потолок не передаёт уровень премиального салона, которого ждут от топовой комплектации. «Звёздное небо» с оптоволокном и настройкой яркости под ключ полностью меняет атмосферу в салоне.</p>
@@ -414,6 +452,6 @@
       </div>
     </div>
   </footer>
-  <script src="../js/main.js"></script>
+  <script src="../js/main.js?v=6"></script>
 </body>
 </html>
