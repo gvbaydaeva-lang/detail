@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
-from site_common import render_topbar, render_header  # noqa: E402
+from site_common import render_header, render_quick_contacts, render_topbar  # noqa: E402
 
 ACTIVE_BY_NAME = {
     "index.html": "index",
@@ -25,10 +25,17 @@ ACTIVE_BY_NAME = {
 }
 
 HEADER_PATTERN = re.compile(
-    r"(?:<div class=\"topbar\">.*?</div>\s*)?"
+    r"^[ \t]*(?:<div class=\"topbar\">.*?</div>\s*)?"
     r"<header class=\"(?:site-header|header)\" id=\"header\">.*?</header>",
-    re.DOTALL,
+    re.DOTALL | re.MULTILINE,
 )
+
+QUICK_CONTACT_PATTERN = re.compile(
+    r'^[ \t]*<aside class="quick-contact".*?</aside>\s*',
+    re.DOTALL | re.MULTILINE,
+)
+
+FOOTER_PATTERN = re.compile(r'^[ \t]*<footer', re.MULTILINE)
 
 
 def prefix_for(path: Path) -> str:
@@ -48,14 +55,32 @@ def active_for(path: Path) -> Optional[str]:
     return None
 
 
-def patch_file(path: Path) -> bool:
-    text = path.read_text(encoding="utf-8")
+def patch_html(text: str, prefix: str, active: Optional[str]) -> str:
     if not HEADER_PATTERN.search(text):
-        return False
-    prefix = prefix_for(path)
-    active = active_for(path)
+        raise ValueError("header not found")
     new_header = render_topbar(prefix) + "\n" + render_header(prefix, active)
     new_text = HEADER_PATTERN.sub(new_header, text, count=1)
+    new_text = QUICK_CONTACT_PATTERN.sub("", new_text)
+    if not FOOTER_PATTERN.search(new_text):
+        raise ValueError("footer not found")
+    return FOOTER_PATTERN.sub(
+        f"{render_quick_contacts()}\n  <footer",
+        new_text,
+        count=1,
+    )
+
+
+def patch_file(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8")
+    prefix = prefix_for(path)
+    active = active_for(path)
+    try:
+        new_text = patch_html(text, prefix, active)
+    except ValueError as error:
+        if str(error) == "header not found":
+            return False
+        print(f"Skipped quick contacts (no footer): {path.relative_to(ROOT)}")
+        return False
     if new_text == text:
         return False
     path.write_text(new_text, encoding="utf-8")

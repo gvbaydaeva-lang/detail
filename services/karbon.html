@@ -10,6 +10,32 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/styles.css?v=6">
+  <script type="application/ld+json" data-breadcrumb-schema>
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Главная",
+      "item": "https://ls-detailing.ru/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Услуги",
+      "item": "https://ls-detailing.ru/services.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Карбоновые элементы",
+      "item": "https://ls-detailing.ru/services/karbon.html"
+    }
+  ]
+}
+  </script>
 
   <link rel="canonical" href="https://ls-detailing.ru/services/karbon.html">
   <script type="application/ld+json" data-seo-graph>
@@ -96,32 +122,6 @@
       "provider": {
         "@id": "https://ls-detailing.ru/#business"
       }
-    }
-  ]
-}
-  </script>
-  <script type="application/ld+json" data-breadcrumb-schema>
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Главная",
-      "item": "https://ls-detailing.ru/"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Услуги",
-      "item": "https://ls-detailing.ru/services.html"
-    },
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Карбоновые элементы",
-      "item": "https://ls-detailing.ru/services/karbon.html"
     }
   ]
 }
@@ -255,14 +255,6 @@
       <button class="burger" id="burger" aria-label="Меню"><span></span><span></span></button>
     </div>
   </header>
-  <aside class="quick-contact" aria-label="Быстрая связь">
-    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
-      <span aria-hidden="true">WA</span><span class="quick-contact__text">WhatsApp</span>
-    </a>
-    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram">
-      <span aria-hidden="true">TG</span><span class="quick-contact__text">Telegram</span>
-    </a>
-  </aside>
   <main class="page-top">
     <nav class="breadcrumbs" aria-label="Хлебные крошки" data-breadcrumbs>
       <div class="container">
@@ -392,20 +384,27 @@
       </div>
     </section>
 
-    <section class="service-cta">
+    <section class="form-section form-section--service" id="consultation">
       <div class="container">
-        <div class="service-cta__inner reveal">
-          <div class="service-cta__content">
-            <h2 class="service-cta__title">Записаться на «Карбоновые элементы»</h2>
-            <p class="service-cta__text">Оценим состояние автомобиля, уточним сроки и предложим решение без лишних работ.</p>
-            <form class="form lead-form service-lead-form" novalidate>
+        <div class="form-wrap form-wrap--home form-wrap--service reveal">
+          <div class="form-wrap__intro">
+            <p class="form-wrap__eyebrow">Запись в LS Detailing</p>
+            <h2 class="form-wrap__title">Записаться на «Карбоновые элементы»</h2>
+            <p class="form-wrap__desc">Оценим состояние автомобиля, уточним сроки и предложим решение без лишних работ.</p>
+            <ul class="form-wrap__benefits" aria-label="Преимущества консультации">
+              <li>Ответим и уточним детали</li>
+              <li>Согласуем удобное время</li>
+              <li>Без навязанных услуг</li>
+            </ul>
+          </div>
+          <form class="form form--home lead-form service-lead-form" novalidate>
               <input type="hidden" name="service" value="Карбоновые элементы">
               <div class="form__honeypot" aria-hidden="true">
                 <label>Не заполняйте это поле<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
               </div>
               <div class="form__group">
                 <label class="form__label">Имя
-                  <input type="text" name="name" class="form__input" autocomplete="name" required>
+                  <input type="text" name="name" class="form__input" autocomplete="name" placeholder="Как к вам обращаться" required>
                 </label>
               </div>
               <div class="form__group">
@@ -423,27 +422,23 @@
                 </label>
               </div>
               <div class="form__group form__group--full">
-                <label class="form__label">Комментарий
-                  <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и удобное время"></textarea>
+                <label class="form__label">Что нужно сделать
+                  <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и желаемые работы"></textarea>
                 </label>
               </div>
               <button type="submit" class="btn btn--dark form__submit">Отправить заявку</button>
               <p class="form__privacy">Нажимая кнопку, вы соглашаетесь с <a href="../privacy.html">политикой обработки персональных данных</a>.</p>
               <div class="form-status" data-form-status role="status" aria-live="polite"></div>
             </form>
-          </div>
-          <div class="service-cta__map">
-            <p class="contact-block__label">Как нас найти</p>
-            <p class="contact-block__value">Республика Калмыкия, г. Элиста, 10 улица, д. 52</p>
-            <p class="contact-block__sub">Ежедневно 10:00–19:00 · <a href="tel:+79618422227" class="contact-block__value--link">+7 (961) 842-22-27</a></p>
-            <div class="map-wrap service-cta__map-frame">
-              <iframe src="https://yandex.ru/map-widget/v1/?text=%D0%AD%D0%BB%D0%B8%D1%81%D1%82%D0%B0%2C%2010-%D0%B9%20%D0%BC%D0%B8%D0%BA%D1%80%D0%BE%D1%80%D0%B0%D0%B9%D0%BE%D0%BD%2C%2052&amp;z=17&amp;l=map&amp;pt=44.2695%2C46.3088%2Cpm2rdm" title="LS Detailing на карте" allowfullscreen loading="lazy"></iframe>
-            </div>
-          </div>
         </div>
       </div>
     </section>
   </main>
+  <aside class="quick-contact" aria-label="Быстрая связь">
+    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp"><span aria-hidden="true">WA</span></a>
+    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram"><span aria-hidden="true">TG</span></a>
+    <a href="https://max.ru/u/f9LHodD0cOIuJfGnlIDorPs9KmvAuaXCx5b0g_xDXPa1e5oa1pMcjjTLu1k" class="quick-contact__link quick-contact__link--max" target="_blank" rel="noopener" aria-label="Написать в MAX"><span aria-hidden="true">M</span></a>
+  </aside>
   <footer class="footer">
     <div class="container">
       <div class="footer__bottom" style="border-top:none;padding-top:0">

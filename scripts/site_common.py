@@ -145,12 +145,12 @@ def render_header(prefix="", active=None):
 
 
 def render_site_header(prefix="", active=None):
-    quick_contacts = """  <aside class="quick-contact" aria-label="Быстрая связь">
-    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
-      <span aria-hidden="true">WA</span><span class="quick-contact__text">WhatsApp</span>
-    </a>
-    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram">
-      <span aria-hidden="true">TG</span><span class="quick-contact__text">Telegram</span>
-    </a>
+    return render_topbar(prefix) + "\n" + render_header(prefix, active)
+
+
+def render_quick_contacts():
+    return """  <aside class="quick-contact" aria-label="Быстрая связь">
+    <a href="https://wa.me/message/VTM6WDF3RHO7C1" class="quick-contact__link quick-contact__link--whatsapp" target="_blank" rel="noopener" aria-label="Написать в WhatsApp"><span aria-hidden="true">WA</span></a>
+    <a href="https://t.me/+79618422227" class="quick-contact__link quick-contact__link--telegram" target="_blank" rel="noopener" aria-label="Написать в Telegram"><span aria-hidden="true">TG</span></a>
+    <a href="https://max.ru/u/f9LHodD0cOIuJfGnlIDorPs9KmvAuaXCx5b0g_xDXPa1e5oa1pMcjjTLu1k" class="quick-contact__link quick-contact__link--max" target="_blank" rel="noopener" aria-label="Написать в MAX"><span aria-hidden="true">M</span></a>
   </aside>"""
-    return render_topbar(prefix) + "\n" + render_header(prefix, active) + "\n" + quick_contacts

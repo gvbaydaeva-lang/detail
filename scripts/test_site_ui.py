@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import importlib.util
 import re
 import sys
 import unittest
@@ -11,6 +12,12 @@ from services_data import SERVICES
 
 ROOT = SCRIPTS.parent
 
+PATCH_HEADERS_SPEC = importlib.util.spec_from_file_location(
+    "patch_headers", SCRIPTS / "patch-headers.py"
+)
+PATCH_HEADERS = importlib.util.module_from_spec(PATCH_HEADERS_SPEC)
+PATCH_HEADERS_SPEC.loader.exec_module(PATCH_HEADERS)
+
 
 def full_pages():
     for path in sorted(ROOT.rglob("*.html")):
@@ -20,6 +27,23 @@ def full_pages():
 
 
 class SiteUiTest(unittest.TestCase):
+    def test_header_and_contacts_patch_is_idempotent(self):
+        original = """<!DOCTYPE html>
+<html><body>
+        <div class="topbar"><div>Old topbar</div></div>
+        <header class="header" id="header"><div>Old header</div></header>
+        <aside class="quick-contact"><a>Old contacts</a></aside>
+        <main>Content</main>
+        <footer class="footer">Footer</footer>
+</body></html>
+"""
+        once = PATCH_HEADERS.patch_html(original, "", "index")
+        twice = PATCH_HEADERS.patch_html(once, "", "index")
+
+        self.assertEqual(twice, once)
+        self.assertEqual(once.count('class="quick-contact"'), 1)
+        self.assertRegex(once, r'</aside>\s*<footer')
+
     def test_each_page_has_one_messenger_panel_before_footer(self):
         for path, text in full_pages():
             with self.subTest(path=path.relative_to(ROOT)):
@@ -57,6 +81,16 @@ class SiteUiTest(unittest.TestCase):
                 self.assertIn('class="form form--home lead-form service-lead-form"', text)
                 self.assertIn(f'name="service" value="{data["title"]}"', text)
                 self.assertNotIn("service-cta__map", text)
+
+    def test_generated_service_pages_keep_seo_markup(self):
+        for slug in SERVICES:
+            path = ROOT / "services" / f"{slug}.html"
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(slug=slug):
+                canonical = f"https://ls-detailing.ru/services/{slug}.html"
+                self.assertIn(f'<link rel="canonical" href="{canonical}">', text)
+                self.assertIn("data-seo-graph", text)
+                self.assertRegex(text, r'"@type":\s*"Service"')
 
 
 if __name__ == "__main__":

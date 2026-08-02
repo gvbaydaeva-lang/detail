@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Генератор страниц услуг и обновление навигации LS Detailing."""
 
+import importlib.util
 import re
 import sys
 from pathlib import Path
@@ -13,8 +14,8 @@ SERVICES_DIR = ROOT / "services"
 sys.path.insert(0, str(SCRIPTS))
 
 from site_common import (  # noqa: E402
-    MAP_IFRAME,
     SOCIALS,
+    render_quick_contacts,
     render_site_header,
     service_href,
 )
@@ -26,6 +27,10 @@ from stage_icons import (  # noqa: E402
     infer_stage_icon,
     stage_icon_svg,
 )
+
+SEO_SPEC = importlib.util.spec_from_file_location("apply_seo", SCRIPTS / "apply-seo.py")
+APPLY_SEO = importlib.util.module_from_spec(SEO_SPEC)
+SEO_SPEC.loader.exec_module(APPLY_SEO)
 
 ROOT_PAGES = {
     "index.html": "index",
@@ -102,14 +107,14 @@ def render_related_services(slug, data):
 
 
 def render_lead_form(service_title):
-    return f"""            <form class="form lead-form service-lead-form" novalidate>
+    return f"""          <form class="form form--home lead-form service-lead-form" novalidate>
               <input type="hidden" name="service" value="{service_title}">
               <div class="form__honeypot" aria-hidden="true">
                 <label>Не заполняйте это поле<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
               </div>
               <div class="form__group">
                 <label class="form__label">Имя
-                  <input type="text" name="name" class="form__input" autocomplete="name" required>
+                  <input type="text" name="name" class="form__input" autocomplete="name" placeholder="Как к вам обращаться" required>
                 </label>
               </div>
               <div class="form__group">
@@ -127,8 +132,8 @@ def render_lead_form(service_title):
                 </label>
               </div>
               <div class="form__group form__group--full">
-                <label class="form__label">Комментарий
-                  <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и удобное время"></textarea>
+                <label class="form__label">Что нужно сделать
+                  <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и желаемые работы"></textarea>
                 </label>
               </div>
               <button type="submit" class="btn btn--dark form__submit">Отправить заявку</button>
@@ -209,26 +214,25 @@ def render_service_page(slug, data):
       </div>
     </section>
 
-    <section class="service-cta">
+    <section class="form-section form-section--service" id="consultation">
       <div class="container">
-        <div class="service-cta__inner reveal">
-          <div class="service-cta__content">
-            <h2 class="service-cta__title">Записаться на «{data['title']}»</h2>
-            <p class="service-cta__text">Оценим состояние автомобиля, уточним сроки и предложим решение без лишних работ.</p>
+        <div class="form-wrap form-wrap--home form-wrap--service reveal">
+          <div class="form-wrap__intro">
+            <p class="form-wrap__eyebrow">Запись в LS Detailing</p>
+            <h2 class="form-wrap__title">Записаться на «{data['title']}»</h2>
+            <p class="form-wrap__desc">Оценим состояние автомобиля, уточним сроки и предложим решение без лишних работ.</p>
+            <ul class="form-wrap__benefits" aria-label="Преимущества консультации">
+              <li>Ответим и уточним детали</li>
+              <li>Согласуем удобное время</li>
+              <li>Без навязанных услуг</li>
+            </ul>
+          </div>
 {lead_form}
-          </div>
-          <div class="service-cta__map">
-            <p class="contact-block__label">Как нас найти</p>
-            <p class="contact-block__value">Республика Калмыкия, г. Элиста, 10 улица, д. 52</p>
-            <p class="contact-block__sub">Ежедневно 10:00–19:00 · <a href="tel:+79618422227" class="contact-block__value--link">+7 (961) 842-22-27</a></p>
-            <div class="map-wrap service-cta__map-frame">
-              {MAP_IFRAME}
-            </div>
-          </div>
         </div>
       </div>
     </section>
   </main>
+{render_quick_contacts()}
   <footer class="footer">
     <div class="container">
       <div class="footer__bottom" style="border-top:none;padding-top:0">
@@ -313,6 +317,7 @@ def render_services_page():
       </div>
     </section>
   </main>
+{render_quick_contacts()}
   <footer class="footer">
     <div class="container">
       <div class="footer__grid">
@@ -337,14 +342,15 @@ def patch_header_in_file(path, prefix="", active=None):
     text = path.read_text(encoding="utf-8")
     new_header = render_site_header(prefix, active)
     pattern = (
-        r'(?:<div class="topbar">.*?</div>\s*)?'
+        r'^[ \t]*(?:<div class="topbar">.*?</div>\s*)?'
         r'<header class="(?:site-header|header)" id="header">.*?</header>'
         r'(?:\s*<aside class="quick-contact".*?</aside>)?'
     )
-    if not re.search(pattern, text, re.DOTALL):
+    flags = re.DOTALL | re.MULTILINE
+    if not re.search(pattern, text, flags):
         print(f"  SKIP header: {path.name}")
         return False
-    new_text = re.sub(pattern, new_header.strip(), text, count=1, flags=re.DOTALL)
+    new_text = re.sub(pattern, new_header, text, count=1, flags=flags)
     if new_text != text:
         path.write_text(new_text, encoding="utf-8")
         return True
@@ -367,6 +373,7 @@ def sync_all_headers():
 
 def main():
     SERVICES_DIR.mkdir(parents=True, exist_ok=True)
+    generated_paths = []
 
     for slug, data in SERVICES.items():
         out = SERVICES_DIR / f"{slug}.html"
@@ -374,6 +381,7 @@ def main():
             apply_breadcrumbs(render_service_page(slug, data), f"services/{slug}.html"),
             encoding="utf-8",
         )
+        generated_paths.append(out)
         print(f"Written services/{slug}.html")
 
     services_path = ROOT / "services.html"
@@ -381,9 +389,12 @@ def main():
         apply_breadcrumbs(render_services_page(), "services.html"),
         encoding="utf-8",
     )
+    generated_paths.append(services_path)
     print("Written services.html")
 
     sync_all_headers()
+    for path in generated_paths:
+        APPLY_SEO.patch_page(path)
     print("Done.")
 
 
