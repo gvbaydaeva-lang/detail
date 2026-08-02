@@ -11,7 +11,12 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
-from site_common import render_header, render_quick_contacts, render_topbar  # noqa: E402
+from site_common import (  # noqa: E402
+    STYLES_VERSION,
+    render_header,
+    render_quick_contacts,
+    render_topbar,
+)
 
 ACTIVE_BY_NAME = {
     "index.html": "index",
@@ -60,6 +65,11 @@ def patch_html(text: str, prefix: str, active: Optional[str]) -> str:
         raise ValueError("header not found")
     new_header = render_topbar(prefix) + "\n" + render_header(prefix, active)
     new_text = HEADER_PATTERN.sub(new_header, text, count=1)
+    new_text = re.sub(
+        r'(href="(?:\./|\.\./)*css/styles\.css\?v=)\d+(")',
+        rf'\g<1>{STYLES_VERSION}\2',
+        new_text,
+    )
     new_text = QUICK_CONTACT_PATTERN.sub("", new_text)
     if not FOOTER_PATTERN.search(new_text):
         raise ValueError("footer not found")

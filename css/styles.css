@@ -2595,13 +2595,13 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 .quick-contact__link:focus-visible {
-  outline: 3px solid rgba(185, 151, 77, 0.45);
+  outline: 3px solid #7a5a12;
   outline-offset: 3px;
 }
 
-.quick-contact__link--whatsapp { background: #1f8f55; }
+.quick-contact__link--whatsapp { background: #187744; }
 .quick-contact__link--telegram { background: #2079b6; }
-.quick-contact__link--max { background: linear-gradient(135deg, #6656e8, #4f8bea); }
+.quick-contact__link--max { background: linear-gradient(135deg, #5546c9, #326ab6); }
 
 .quick-contact__link > span:first-child {
   line-height: 1;

@@ -26,6 +26,16 @@ def full_pages():
             yield path, text
 
 
+def contrast_with_white(hex_color):
+    channels = [int(hex_color[index:index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+        for channel in channels
+    ]
+    luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+    return 1.05 / (luminance + 0.05)
+
+
 class SiteUiTest(unittest.TestCase):
     def test_header_and_contacts_patch_is_idempotent(self):
         original = """<!DOCTYPE html>
@@ -70,6 +80,25 @@ class SiteUiTest(unittest.TestCase):
         css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
         block = re.search(r"\.quick-contact\s*\{([^}]*)\}", css, re.DOTALL).group(1)
         self.assertNotIn("position: fixed", block)
+
+    def test_pages_request_the_current_stylesheet_version(self):
+        for path, text in full_pages():
+            with self.subTest(path=path.relative_to(ROOT)):
+                self.assertRegex(text, r'href="(?:\./|\.\./)*css/styles\.css\?v=7"')
+
+    def test_messenger_button_colors_contrast_with_white_labels(self):
+        css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
+        for modifier in ("whatsapp", "telegram", "max"):
+            with self.subTest(modifier=modifier):
+                block = re.search(
+                    rf"\.quick-contact__link--{modifier}\s*\{{([^}}]*)\}}",
+                    css,
+                    re.DOTALL,
+                ).group(1)
+                colors = re.findall(r"#[0-9a-fA-F]{6}", block)
+                self.assertTrue(colors)
+                for color in colors:
+                    self.assertGreaterEqual(contrast_with_white(color), 4.5)
 
     def test_service_pages_use_home_style_form_without_cta_map(self):
         for slug, data in SERVICES.items():
