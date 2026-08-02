@@ -2,6 +2,7 @@
 import importlib.util
 import re
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -17,6 +18,12 @@ PATCH_HEADERS_SPEC = importlib.util.spec_from_file_location(
 )
 PATCH_HEADERS = importlib.util.module_from_spec(PATCH_HEADERS_SPEC)
 PATCH_HEADERS_SPEC.loader.exec_module(PATCH_HEADERS)
+
+BUILD_ARTICLES_SPEC = importlib.util.spec_from_file_location(
+    "build_articles", SCRIPTS / "build-articles.py"
+)
+BUILD_ARTICLES = importlib.util.module_from_spec(BUILD_ARTICLES_SPEC)
+BUILD_ARTICLES_SPEC.loader.exec_module(BUILD_ARTICLES)
 
 
 def full_pages():
@@ -120,6 +127,34 @@ class SiteUiTest(unittest.TestCase):
                 self.assertIn(f'<link rel="canonical" href="{canonical}">', text)
                 self.assertIn("data-seo-graph", text)
                 self.assertRegex(text, r'"@type":\s*"Service"')
+
+    def test_article_generator_keeps_footer_contacts_styles_and_seo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            temporary_root = Path(directory)
+            original_root = BUILD_ARTICLES.ROOT
+            original_articles_dir = BUILD_ARTICLES.ARTICLES_DIR
+            seo_module = getattr(BUILD_ARTICLES, "APPLY_SEO", None)
+            original_seo_root = getattr(seo_module, "ROOT", None)
+            try:
+                BUILD_ARTICLES.ROOT = temporary_root
+                BUILD_ARTICLES.ARTICLES_DIR = temporary_root / "articles"
+                if seo_module:
+                    seo_module.ROOT = temporary_root
+                BUILD_ARTICLES.main()
+                paths = [temporary_root / "useful.html"]
+                paths.extend((temporary_root / "articles").glob("*.html"))
+                for path in paths:
+                    text = path.read_text(encoding="utf-8")
+                    with self.subTest(path=path.relative_to(temporary_root)):
+                        self.assertIn("css/styles.css?v=7", text)
+                        self.assertRegex(text, r'</aside>\s*<footer')
+                        self.assertIn('rel="canonical"', text)
+                        self.assertIn("data-seo-graph", text)
+            finally:
+                BUILD_ARTICLES.ROOT = original_root
+                BUILD_ARTICLES.ARTICLES_DIR = original_articles_dir
+                if seo_module:
+                    seo_module.ROOT = original_seo_root
 
 
 if __name__ == "__main__":

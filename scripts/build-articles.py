@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Генератор страниц статей LS Detailing."""
 
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -10,9 +11,18 @@ SCRIPTS = Path(__file__).resolve().parent
 ARTICLES_DIR = ROOT / "articles"
 
 sys.path.insert(0, str(SCRIPTS))
-from site_common import SOCIALS, render_site_header  # noqa: E402
+from site_common import (  # noqa: E402
+    SOCIALS,
+    STYLES_VERSION,
+    render_quick_contacts,
+    render_site_header,
+)
 from services_data import SERVICES  # noqa: E402
 from breadcrumbs import apply_breadcrumbs  # noqa: E402
+
+SEO_SPEC = importlib.util.spec_from_file_location("apply_seo", SCRIPTS / "apply-seo.py")
+APPLY_SEO = importlib.util.module_from_spec(SEO_SPEC)
+SEO_SPEC.loader.exec_module(APPLY_SEO)
 
 ARTICLES = [
     {
@@ -315,7 +325,7 @@ def render_article(article):
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/styles.css?v=6">
+  <link rel="stylesheet" href="../css/styles.css?v={STYLES_VERSION}">
 </head>
 <body>
 {render_site_header("../", "useful")}
@@ -364,6 +374,7 @@ def render_article(article):
       </div>
     </article>
   </main>
+{render_quick_contacts()}
   <footer class="footer">
     <div class="container">
       <div class="footer__bottom" style="border-top:none;padding-top:0">
@@ -403,7 +414,7 @@ def render_useful_page():
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=6">
+  <link rel="stylesheet" href="css/styles.css?v={STYLES_VERSION}">
 </head>
 <body>
 {render_site_header(active="useful")}
@@ -423,6 +434,7 @@ def render_useful_page():
       </div>
     </section>
   </main>
+{render_quick_contacts()}
   <footer class="footer">
     <div class="container">
       <div class="footer__grid">
@@ -445,19 +457,24 @@ def render_useful_page():
 
 def main():
     ARTICLES_DIR.mkdir(parents=True, exist_ok=True)
+    generated_paths = []
     for article in ARTICLES:
         path = ARTICLES_DIR / f"{article['slug']}.html"
         path.write_text(
             apply_breadcrumbs(render_article(article), f"articles/{article['slug']}.html"),
             encoding="utf-8",
         )
+        generated_paths.append(path)
         print(f"Written {path.name}")
     useful_path = ROOT / "useful.html"
     useful_path.write_text(
         apply_breadcrumbs(render_useful_page(), "useful.html"),
         encoding="utf-8",
     )
+    generated_paths.append(useful_path)
     print("Written useful.html")
+    for path in generated_paths:
+        APPLY_SEO.patch_page(path)
 
 
 if __name__ == "__main__":
