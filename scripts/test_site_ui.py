@@ -168,6 +168,25 @@ class SiteUiTest(unittest.TestCase):
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assert_footer_has_messengers(text)
 
+    def test_footer_messengers_are_a_right_aligned_single_row_with_mobile_centering(self):
+        css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
+        block_match = re.search(
+            r"\.footer__messengers\s*\{([^}]*)\}", css, re.DOTALL
+        )
+        self.assertIsNotNone(block_match)
+        block = block_match.group(1)
+        self.assertRegex(block, r"\bdisplay\s*:\s*flex\s*;")
+        self.assertNotRegex(block, r"\bflex-direction\s*:\s*column\s*;")
+        self.assertRegex(block, r"\bmargin-left\s*:\s*auto\s*;")
+
+        mobile_css = re.search(
+            r"@media\s*\(max-width:\s*768px\)\s*\{(.*)", css, re.DOTALL
+        ).group(1)
+        self.assertRegex(
+            mobile_css,
+            r"\.footer__messengers\s*\{[^}]*\bjustify-content\s*:\s*center\s*;[^}]*\}",
+        )
+
     def test_each_lead_form_requires_privacy_consent_before_submit(self):
         form_pattern = re.compile(
             r'<form\b[^>]*(?:lead-form|consultForm)[^>]*>.*?</form>', re.DOTALL
