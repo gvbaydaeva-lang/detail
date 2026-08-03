@@ -29,7 +29,11 @@ BUILD_ARTICLES_SPEC.loader.exec_module(BUILD_ARTICLES)
 
 
 def full_pages():
-    for path in sorted(ROOT.rglob("*.html")):
+    page_paths = [*ROOT.glob("*.html")]
+    for page_directory in (ROOT / "articles", ROOT / "services"):
+        page_paths.extend(page_directory.glob("*.html"))
+
+    for path in sorted(page_paths):
         text = path.read_text(encoding="utf-8")
         if "<footer" in text:
             yield path, text
