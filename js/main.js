@@ -263,10 +263,7 @@ function initForms() {
     if (value) sessionStorage.setItem(`ls_${key}`, value);
   });
 
-  const endpoint =
-    document.querySelector('meta[name="ls-form-endpoint"]')?.content?.trim() ||
-    window.LS_FORM_ENDPOINT ||
-    '';
+  const endpoint = resolveLeadEndpoint();
 
   forms.forEach((form) => {
     const status = form.querySelector('[data-form-status]') || createFormStatus(form);
@@ -340,6 +337,18 @@ function initForms() {
 
     if (submit && !submit.dataset.label) submit.dataset.label = submit.textContent.trim();
   });
+}
+
+function resolveLeadEndpoint() {
+  const configured =
+    document.querySelector('meta[name="ls-form-endpoint"]')?.content?.trim() ||
+    window.LS_FORM_ENDPOINT ||
+    '';
+  if (configured) return configured;
+
+  return ['127.0.0.1', 'localhost'].includes(window.location.hostname)
+    ? 'http://127.0.0.1:8787/api/leads'
+    : '';
 }
 
 function createFormStatus(form) {

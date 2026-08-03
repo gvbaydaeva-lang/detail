@@ -30,7 +30,12 @@ function createRequiredCheckbox(checked) {
   };
 }
 
-function createFormHarness(checked) {
+function createFormHarness(checked, options = {}) {
+  const {
+    hostname = 'example.test',
+    metaEndpoint = '',
+    windowEndpoint = 'https://forms.example.test/lead',
+  } = options;
   const checkbox = createRequiredCheckbox(checked);
   const status = { className: '', innerHTML: '' };
   const submit = {
@@ -41,6 +46,7 @@ function createFormHarness(checked) {
   };
   let submitHandler;
   let endpointCalls = 0;
+  const endpointUrls = [];
   let readyHandler;
 
   const form = {
@@ -82,7 +88,9 @@ function createFormHarness(checked) {
         return null;
       },
       querySelector(selector) {
-        if (selector === 'meta[name="ls-form-endpoint"]') return null;
+        if (selector === 'meta[name="ls-form-endpoint"]') {
+          return metaEndpoint ? { content: metaEndpoint } : null;
+        }
         return null;
       },
       querySelectorAll(selector) {
@@ -90,15 +98,16 @@ function createFormHarness(checked) {
         return [];
       },
     },
-    fetch: async () => {
+    fetch: async (url) => {
       endpointCalls += 1;
+      endpointUrls.push(url);
       return { ok: true };
     },
     sessionStorage: { getItem() { return ''; }, setItem() {} },
     window: {
-      LS_FORM_ENDPOINT: 'https://forms.example.test/lead',
+      LS_FORM_ENDPOINT: windowEndpoint,
       clearTimeout() {},
-      location: { href: 'https://example.test/contact', search: '' },
+      location: { href: `http://${hostname}/contact`, hostname, search: '' },
       setTimeout() { return 1; },
     },
   };
@@ -111,6 +120,7 @@ function createFormHarness(checked) {
   return {
     checkbox,
     endpointCalls: () => endpointCalls,
+    endpointUrls,
     status,
     async submit() {
       let prevented = false;
@@ -134,4 +144,27 @@ function createFormHarness(checked) {
   assert.equal(unchecked.checkbox.getAttribute('aria-invalid'), null);
   assert.equal(unchecked.checkbox.classList.contains('form__input--error'), false);
   assert.equal(unchecked.checkbox.checked, false);
+
+  const local = createFormHarness(true, {
+    hostname: '127.0.0.1',
+    windowEndpoint: '',
+  });
+  await local.submit();
+  assert.equal(local.endpointCalls(), 1);
+  assert.deepEqual(local.endpointUrls, ['http://127.0.0.1:8787/api/leads']);
+
+  const production = createFormHarness(true, {
+    hostname: 'ls-detailing.ru',
+    windowEndpoint: '',
+  });
+  await production.submit();
+  assert.equal(production.endpointCalls(), 0);
+
+  const explicit = createFormHarness(true, {
+    hostname: '127.0.0.1',
+    metaEndpoint: 'https://api.example.test/api/leads',
+    windowEndpoint: '',
+  });
+  await explicit.submit();
+  assert.deepEqual(explicit.endpointUrls, ['https://api.example.test/api/leads']);
 })();
