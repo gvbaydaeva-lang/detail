@@ -124,6 +124,7 @@ def remove_footer_links(text: str, footer_start: int, footer_end: int, names: tu
 def patch_footer(text: str, prefix: str) -> str:
     """Normalize footer links and place one shared messenger row in its bottom."""
     text = remove_class_elements(text, "quick-contact")
+    text = remove_class_elements(text, "footer__bottom-actions")
     text = remove_class_elements(text, "footer__messengers")
     text = remove_class_elements(text, "footer__bottom-links")
 
@@ -152,7 +153,10 @@ def patch_footer(text: str, prefix: str) -> str:
                 break
         if not navigation:
             raise ValueError("footer navigation not found")
-        navigation_indent = line_indent(text, navigation[1])
+        closing_start = navigation[1] - len("</div>")
+        text = text[:closing_start].rstrip() + text[closing_start:]
+        navigation = (navigation[0], matching_tag_end(text, navigation[0]))
+        navigation_indent = line_indent(text, navigation[0])
         privacy = f'<a href="{prefix}privacy.html" class="footer__link">Политика конфиденциальности</a>'
         text = text[: navigation[1] - len("</div>")] + f"\n{navigation_indent}  {privacy}\n{navigation_indent}" + text[navigation[1] - len("</div>") :]
     else:
@@ -174,14 +178,19 @@ def patch_footer(text: str, prefix: str) -> str:
     bottom_indent = line_indent(text, bottom_start)
     blocks = []
     if not grid:
-        blocks.append(indented(
-            f"""<div class="footer__bottom-links">
+        links = f"""<div class="footer__bottom-links">
   <a href="{prefix}contacts.html" class="footer__link">Контакты</a>
   <a href="{prefix}privacy.html" class="footer__link">Политика конфиденциальности</a>
-</div>""",
-            bottom_indent + "  ",
+</div>"""
+        actions = "\n".join((
+            '<div class="footer__bottom-actions">',
+            indented(links, "  "),
+            indented(render_footer_messengers(), "  "),
+            "</div>",
         ))
-    blocks.append(indented(render_footer_messengers(), bottom_indent + "  "))
+        blocks.append(indented(actions, bottom_indent + "  "))
+    else:
+        blocks.append(indented(render_footer_messengers(), bottom_indent + "  "))
     insertion = "\n" + "\n".join(blocks) + "\n" + bottom_indent
     closing_start = bottom_end - len("</div>")
     return text[:closing_start] + insertion + text[closing_start:]
@@ -202,15 +211,12 @@ def patch_html(text: str, prefix: str, active: Optional[str]) -> str:
 
 def patch_file(path: Path) -> bool:
     text = path.read_text(encoding="utf-8")
-    prefix = prefix_for(path)
-    active = active_for(path)
-    try:
-        new_text = patch_html(text, prefix, active)
-    except ValueError as error:
-        if str(error) == "header not found":
-            return False
+    if "<footer" not in text:
         print(f"Skipped footer patch (no footer): {path.relative_to(ROOT)}")
         return False
+    prefix = prefix_for(path)
+    active = active_for(path)
+    new_text = patch_html(text, prefix, active)
     if new_text == text:
         return False
     path.write_text(new_text, encoding="utf-8")

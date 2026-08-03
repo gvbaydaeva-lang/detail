@@ -237,11 +237,13 @@ def render_service_page(slug, data):
     <div class="container">
       <div class="footer__bottom" style="border-top:none;padding-top:0">
         <p>&copy; 2026 LS Detailing</p>
-        <div class="footer__bottom-links">
-          <a href="../contacts.html" class="footer__link">Контакты</a>
-          <a href="../privacy.html" class="footer__link">Политика конфиденциальности</a>
-        </div>
+        <div class="footer__bottom-actions">
+          <div class="footer__bottom-links">
+            <a href="../contacts.html" class="footer__link">Контакты</a>
+            <a href="../privacy.html" class="footer__link">Политика конфиденциальности</a>
+          </div>
 {render_footer_messengers()}
+        </div>
       </div>
     </div>
   </footer>

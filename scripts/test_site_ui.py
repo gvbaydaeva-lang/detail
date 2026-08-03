@@ -108,6 +108,26 @@ class SiteUiTest(unittest.TestCase):
         self.assertEqual(twice, once)
         self.assert_footer_has_messengers(once)
 
+    def test_full_footer_patch_is_idempotent(self):
+        original = """<!DOCTYPE html>
+<html><body>
+<header class="header" id="header"></header>
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div><h4 class="footer__heading">Навигация</h4><a href="contacts.html" class="footer__link">Контакты</a></div>
+    </div>
+    <div class="footer__bottom"><p>Footer</p><a href="privacy.html" class="footer__link">Политика конфиденциальности</a></div>
+  </div>
+</footer>
+</body></html>
+"""
+        once = PATCH_HEADERS.patch_html(original, "", "services")
+        twice = PATCH_HEADERS.patch_html(once, "", "services")
+
+        self.assertEqual(twice, once)
+        self.assert_footer_has_messengers(once)
+
     def assert_footer_has_messengers(self, text):
         self.assertNotIn('class="quick-contact"', text)
         self.assertEqual(text.count('class="footer__messengers"'), 1)
@@ -150,7 +170,15 @@ class SiteUiTest(unittest.TestCase):
             )
             return
 
-        footer_nodes = list(footer_bottom.descendants())
+        actions = nodes_with_class(footer_bottom, "footer__bottom-actions")
+        self.assertEqual(len(actions), 1)
+        self.assertIs(actions[0].parent, footer_bottom)
+        action_children = [child for child in actions[0].children if isinstance(child, MarkupNode)]
+        self.assertEqual(
+            [child.attrs.get("class") for child in action_children],
+            ["footer__bottom-links", "footer__messengers"],
+        )
+        footer_nodes = list(actions[0].descendants())
         contacts = next(
             node
             for node in footer_nodes
@@ -212,7 +240,19 @@ class SiteUiTest(unittest.TestCase):
     def test_pages_request_the_current_stylesheet_version(self):
         for path, text in full_pages():
             with self.subTest(path=path.relative_to(ROOT)):
-                self.assertRegex(text, r'href="(?:\./|\.\./)*css/styles\.css\?v=7"')
+                self.assertRegex(text, r'href="(?:\./|\.\./)*css/styles\.css\?v=8"')
+
+    def test_patch_file_surfaces_footer_structure_errors(self):
+        with tempfile.TemporaryDirectory(dir=ROOT) as directory:
+            path = Path(directory) / "broken-footer.html"
+            path.write_text(
+                '<header class="header" id="header"></header>'
+                '<footer class="footer"><div class="footer__grid"></div>'
+                '<div class="footer__bottom"></div></footer>',
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "footer navigation not found"):
+                PATCH_HEADERS.patch_file(path)
 
     def test_service_pages_use_home_style_form_without_cta_map(self):
         for slug, data in SERVICES.items():
@@ -253,7 +293,7 @@ class SiteUiTest(unittest.TestCase):
                 for path in paths:
                     text = path.read_text(encoding="utf-8")
                     with self.subTest(path=path.relative_to(temporary_root)):
-                        self.assertIn("css/styles.css?v=7", text)
+                        self.assertIn("css/styles.css?v=8", text)
                         self.assert_footer_has_messengers(text)
                         self.assertIn('rel="canonical"', text)
                         self.assertIn("data-seo-graph", text)
