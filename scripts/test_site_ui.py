@@ -4,6 +4,7 @@ import re
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent
@@ -33,6 +34,62 @@ def full_pages():
             yield path, text
 
 
+class MarkupNode:
+    def __init__(self, tag, attrs, parent=None):
+        self.tag = tag
+        self.attrs = dict(attrs)
+        self.parent = parent
+        self.children = []
+
+    def descendants(self):
+        for child in self.children:
+            yield child
+            yield from child.descendants()
+
+    def text(self):
+        return "".join(child for child in self.children if isinstance(child, str)) + "".join(
+            child.text() for child in self.children if isinstance(child, MarkupNode)
+        )
+
+
+class MarkupTree(HTMLParser):
+    VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
+
+    def __init__(self):
+        super().__init__()
+        self.root = MarkupNode("root", [])
+        self.stack = [self.root]
+
+    def handle_starttag(self, tag, attrs):
+        node = MarkupNode(tag, attrs, self.stack[-1])
+        self.stack[-1].children.append(node)
+        if tag not in self.VOID_TAGS:
+            self.stack.append(node)
+
+    def handle_endtag(self, tag):
+        for index in range(len(self.stack) - 1, 0, -1):
+            if self.stack[index].tag == tag:
+                del self.stack[index:]
+                return
+
+    def handle_data(self, data):
+        self.stack[-1].children.append(data)
+
+
+def parse_markup(text):
+    tree = MarkupTree()
+    tree.feed(text)
+    return tree.root
+
+
+def nodes_with_class(root, class_name):
+    return [
+        node
+        for node in root.descendants()
+        if isinstance(node, MarkupNode) and class_name in node.attrs.get("class", "").split()
+    ]
+
+
 class SiteUiTest(unittest.TestCase):
     def test_header_and_contacts_patch_is_idempotent(self):
         original = """<!DOCTYPE html>
@@ -57,6 +114,54 @@ class SiteUiTest(unittest.TestCase):
         messengers = text.index('class="footer__messengers"')
         self.assertGreater(messengers, bottom_start)
         self.assertLess(messengers, text.index("</footer>", bottom_start))
+        footer = nodes_with_class(parse_markup(text), "footer")[0]
+        footer_bottoms = nodes_with_class(footer, "footer__bottom")
+        messenger_nodes = nodes_with_class(footer, "footer__messengers")
+        self.assertIn(messenger_nodes[0], list(footer_bottoms[0].descendants()))
+        controls = messenger_nodes[0]
+        self.assertEqual(
+            [node.text().strip() for node in controls.descendants() if node.tag == "span"],
+            ["WA", "TG", "M"],
+        )
+        self.assertEqual(
+            [node.attrs.get("href") for node in controls.descendants() if node.tag == "a"],
+            [
+                "https://wa.me/message/VTM6WDF3RHO7C1",
+                "https://t.me/+79618422227",
+                "https://max.ru/u/f9LHodD0cOIuJfGnlIDorPs9KmvAuaXCx5b0g_xDXPa1e5oa1pMcjjTLu1k",
+            ],
+        )
+        self.assert_footer_privacy_placement(footer, footer_bottoms[0], controls)
+
+    def assert_footer_privacy_placement(self, footer, footer_bottom, messengers):
+        if nodes_with_class(footer, "footer__grid"):
+            navigation_heading = next(
+                node
+                for node in footer.descendants()
+                if node.tag == "h4" and node.text().strip() == "Навигация"
+            )
+            navigation_column = navigation_heading.parent
+            self.assertTrue(
+                any(
+                    node.tag == "a" and "privacy.html" in node.attrs.get("href", "")
+                    for node in navigation_column.descendants()
+                )
+            )
+            return
+
+        footer_nodes = list(footer_bottom.descendants())
+        contacts = next(
+            node
+            for node in footer_nodes
+            if node.tag == "a" and "contacts.html" in node.attrs.get("href", "")
+        )
+        privacy = next(
+            node
+            for node in footer_nodes
+            if node.tag == "a" and "privacy.html" in node.attrs.get("href", "")
+        )
+        self.assertLess(footer_nodes.index(contacts), footer_nodes.index(privacy))
+        self.assertLess(footer_nodes.index(privacy), footer_nodes.index(messengers))
 
     def test_each_page_has_footer_integrated_messengers(self):
         for path, text in full_pages():
@@ -67,15 +172,22 @@ class SiteUiTest(unittest.TestCase):
         form_pattern = re.compile(
             r'<form\b[^>]*(?:lead-form|consultForm)[^>]*>.*?</form>', re.DOTALL
         )
+        lead_form_count = 0
         for path, text in full_pages():
             forms = form_pattern.findall(text)
             for form in forms:
+                lead_form_count += 1
                 with self.subTest(path=path.relative_to(ROOT)):
                     self.assertEqual(form.count('name="privacy_consent"'), 1)
                     self.assertRegex(form, r'<input[^>]+type="checkbox"[^>]+name="privacy_consent"[^>]+required')
+                    consent_input = re.search(
+                        r'<input[^>]+type="checkbox"[^>]+name="privacy_consent"[^>]*>', form
+                    ).group(0)
+                    self.assertNotRegex(consent_input, r'\schecked(?:\s|=|>)')
                     self.assertIn("Я даю согласие на обработку персональных данных", form)
                     self.assertIn("privacy.html", form)
                     self.assertLess(form.index('name="privacy_consent"'), form.index('type="submit"'))
+        self.assertEqual(lead_form_count, 27)
 
     def test_pages_request_the_current_stylesheet_version(self):
         for path, text in full_pages():
