@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css?v=8">
+  <link rel="stylesheet" href="css/styles.css?v=9">
 
   <link rel="canonical" href="https://ls-detailing.ru/contacts.html">
   <script type="application/ld+json" data-seo-graph>
@@ -325,8 +325,11 @@
               <label for="comment" class="form__label">Комментарий</label>
               <textarea id="comment" name="comment" class="form__input form__textarea" placeholder="Марка, модель, желаемые услуги" rows="4"></textarea>
             </div>
+            <label class="form__consent">
+              <input type="checkbox" name="privacy_consent" value="accepted" class="form__consent-input" required>
+              <span>Я даю согласие на обработку персональных данных и принимаю условия <a href="privacy.html">Политики конфиденциальности</a>.</span>
+            </label>
             <button type="submit" class="btn btn--dark form__submit">Получить консультацию</button>
-            <p class="form__privacy">Нажимая кнопку, вы соглашаетесь на обработку персональных данных и принимаете условия <a href="privacy.html">политики конфиденциальности</a>.</p>
             <div class="form-status" data-form-status role="status" aria-live="polite"></div>
           </form>
         </div>
@@ -368,6 +371,6 @@
       </div>
     </div>
   </footer>
-  <script src="js/main.js?v=6"></script>
+  <script src="js/main.js?v=7"></script>
 </body>
 </html>

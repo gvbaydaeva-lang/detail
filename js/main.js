@@ -296,7 +296,10 @@ function initForms() {
       const payload = collectLeadPayload(form, trackingFields);
       const invalid = validateLeadForm(form, payload);
       if (invalid) {
-        setFormStatus(status, 'Проверьте выделенные поля.', 'error');
+        const message = invalid.name === 'privacy_consent'
+          ? 'Подтвердите согласие на обработку персональных данных.'
+          : 'Проверьте выделенные поля.';
+        setFormStatus(status, message, 'error');
         invalid.focus();
         return;
       }
@@ -374,9 +377,12 @@ function validateLeadForm(form, payload) {
   let firstInvalid = null;
 
   required.forEach((field) => {
-    const value = String(payload[field.name] || '').trim();
+    const value = field.type === 'checkbox'
+      ? (field.checked ? field.value || 'accepted' : '')
+      : String(payload[field.name] || '').trim();
     const phoneInvalid = field.type === 'tel' && value.replace(/\D/g, '').length < 11;
-    if (!value || phoneInvalid) {
+    const checkboxInvalid = field.type === 'checkbox' && !field.checked;
+    if (!value || phoneInvalid || checkboxInvalid) {
       field.classList.add('form__input--error');
       field.setAttribute('aria-invalid', 'true');
       if (!firstInvalid) firstInvalid = field;

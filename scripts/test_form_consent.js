@@ -24,12 +24,18 @@ function createRequiredCheckbox(checked) {
 function createFormHarness(checked) {
   const checkbox = createRequiredCheckbox(checked);
   const status = { className: '', innerHTML: '' };
-  const submit = { dataset: {}, textContent: 'Отправить заявку' };
+  const submit = {
+    dataset: {},
+    textContent: 'Отправить заявку',
+    setAttribute() {},
+    removeAttribute() {},
+  };
   let submitHandler;
   let endpointCalls = 0;
   let readyHandler;
 
   const form = {
+    reset() {},
     addEventListener(event, handler) {
       assert.equal(event, 'submit');
       submitHandler = handler;

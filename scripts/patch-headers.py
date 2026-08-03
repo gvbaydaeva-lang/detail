@@ -12,6 +12,7 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
 from site_common import (  # noqa: E402
+    SCRIPTS_VERSION,
     STYLES_VERSION,
     render_footer_messengers,
     render_header,
@@ -204,6 +205,11 @@ def patch_html(text: str, prefix: str, active: Optional[str]) -> str:
     new_text = re.sub(
         r'(href="(?:\./|\.\./)*css/styles\.css\?v=)\d+(")',
         rf'\g<1>{STYLES_VERSION}\2',
+        new_text,
+    )
+    new_text = re.sub(
+        r'(src="(?:\./|\.\./)*js/main\.js\?v=)\d+(")',
+        rf'\g<1>{SCRIPTS_VERSION}\2',
         new_text,
     )
     return patch_footer(new_text, prefix)

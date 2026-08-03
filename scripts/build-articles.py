@@ -13,6 +13,7 @@ ARTICLES_DIR = ROOT / "articles"
 sys.path.insert(0, str(SCRIPTS))
 from site_common import (  # noqa: E402
     SOCIALS,
+    SCRIPTS_VERSION,
     STYLES_VERSION,
     render_footer_messengers,
     render_site_header,
@@ -388,7 +389,7 @@ def render_article(article):
       </div>
     </div>
   </footer>
-  <script src="../js/main.js?v=6"></script>
+  <script src="../js/main.js?v={SCRIPTS_VERSION}"></script>
 </body>
 </html>
 """
@@ -453,7 +454,7 @@ def render_useful_page():
       <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p>{render_footer_messengers()}</div>
     </div>
   </footer>
-  <script src="js/main.js?v=6"></script>
+  <script src="js/main.js?v={SCRIPTS_VERSION}"></script>
 </body>
 </html>
 """

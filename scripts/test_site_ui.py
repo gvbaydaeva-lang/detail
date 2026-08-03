@@ -11,6 +11,7 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
 from services_data import SERVICES
+from site_common import SCRIPTS_VERSION, STYLES_VERSION
 
 ROOT = SCRIPTS.parent
 
@@ -240,7 +241,14 @@ class SiteUiTest(unittest.TestCase):
     def test_pages_request_the_current_stylesheet_version(self):
         for path, text in full_pages():
             with self.subTest(path=path.relative_to(ROOT)):
-                self.assertRegex(text, r'href="(?:\./|\.\./)*css/styles\.css\?v=8"')
+                self.assertRegex(
+                    text,
+                    rf'href="(?:\./|\.\./)*css/styles\.css\?v={STYLES_VERSION}"',
+                )
+                self.assertRegex(
+                    text,
+                    rf'src="(?:\./|\.\./)*js/main\.js\?v={SCRIPTS_VERSION}"',
+                )
 
     def test_patch_file_surfaces_footer_structure_errors(self):
         with tempfile.TemporaryDirectory(dir=ROOT) as directory:
@@ -293,7 +301,7 @@ class SiteUiTest(unittest.TestCase):
                 for path in paths:
                     text = path.read_text(encoding="utf-8")
                     with self.subTest(path=path.relative_to(temporary_root)):
-                        self.assertIn("css/styles.css?v=8", text)
+                        self.assertIn(f"css/styles.css?v={STYLES_VERSION}", text)
                         self.assert_footer_has_messengers(text)
                         self.assertIn('rel="canonical"', text)
                         self.assertIn("data-seo-graph", text)

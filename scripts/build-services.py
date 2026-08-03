@@ -15,6 +15,7 @@ sys.path.insert(0, str(SCRIPTS))
 
 from site_common import (  # noqa: E402
     SOCIALS,
+    SCRIPTS_VERSION,
     STYLES_VERSION,
     render_footer_messengers,
     render_site_header,
@@ -137,8 +138,11 @@ def render_lead_form(service_title):
                   <textarea name="comment" class="form__input form__textarea" rows="3" placeholder="Марка, модель и желаемые работы"></textarea>
                 </label>
               </div>
+              <label class="form__consent">
+                <input type="checkbox" name="privacy_consent" value="accepted" class="form__consent-input" required>
+                <span>Я даю согласие на обработку персональных данных и принимаю условия <a href="../privacy.html">Политики конфиденциальности</a>.</span>
+              </label>
               <button type="submit" class="btn btn--dark form__submit">Отправить заявку</button>
-              <p class="form__privacy">Нажимая кнопку, вы соглашаетесь с <a href="../privacy.html">политикой обработки персональных данных</a>.</p>
               <div class="form-status" data-form-status role="status" aria-live="polite"></div>
             </form>"""
 
@@ -247,7 +251,7 @@ def render_service_page(slug, data):
       </div>
     </div>
   </footer>
-  <script src="../js/main.js?v=6"></script>
+  <script src="../js/main.js?v={SCRIPTS_VERSION}"></script>
 </body>
 </html>
 """
@@ -337,7 +341,7 @@ def render_services_page():
       <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p>{render_footer_messengers()}</div>
     </div>
   </footer>
-  <script src="js/main.js?v=6"></script>
+  <script src="js/main.js?v={SCRIPTS_VERSION}"></script>
 </body>
 </html>
 """
