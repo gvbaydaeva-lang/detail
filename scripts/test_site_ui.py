@@ -141,6 +141,8 @@ class SiteUiTest(unittest.TestCase):
         messenger_nodes = nodes_with_class(footer, "footer__messengers")
         self.assertIn(messenger_nodes[0], list(footer_bottoms[0].descendants()))
         controls = messenger_nodes[0]
+        self.assertEqual(controls.attrs.get("role"), "group")
+        self.assertEqual(controls.attrs.get("aria-label"), "Быстрая связь")
         self.assertEqual(
             [node.text().strip() for node in controls.descendants() if node.tag == "span"],
             ["WA", "TG", "M"],
@@ -198,7 +200,7 @@ class SiteUiTest(unittest.TestCase):
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assert_footer_has_messengers(text)
 
-    def test_footer_messengers_are_a_right_aligned_single_row_with_mobile_centering(self):
+    def test_footer_messengers_are_a_right_aligned_single_row_with_mobile_left_copyright(self):
         css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
         block_match = re.search(
             r"\.footer__messengers\s*\{([^}]*)\}", css, re.DOTALL
@@ -214,8 +216,17 @@ class SiteUiTest(unittest.TestCase):
         ).group(1)
         self.assertRegex(
             mobile_css,
-            r"\.footer__messengers\s*\{[^}]*\bjustify-content\s*:\s*center\s*;[^}]*\}",
+            r"\.footer__bottom\s*>\s*p\s*\{[^}]*\balign-self\s*:\s*flex-start\s*;[^}]*\btext-align\s*:\s*left\s*;[^}]*\}",
         )
+
+    def test_consent_copy_and_focus_styles_remain_legible(self):
+        css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
+        consent = re.search(r"\.form__consent\s*\{([^}]*)\}", css, re.DOTALL)
+        focus = re.search(r"\.form__consent-input:focus-visible\s*\{([^}]*)\}", css, re.DOTALL)
+        self.assertIsNotNone(consent)
+        self.assertIsNotNone(focus)
+        self.assertRegex(consent.group(1), r"\bcolor\s*:\s*var\(--text-muted\)\s*;")
+        self.assertRegex(focus.group(1), r"\boutline-color\s*:\s*#7a5a12\s*;")
 
     def test_each_lead_form_requires_privacy_consent_before_submit(self):
         form_pattern = re.compile(
@@ -233,9 +244,21 @@ class SiteUiTest(unittest.TestCase):
                         r'<input[^>]+type="checkbox"[^>]+name="privacy_consent"[^>]*>', form
                     ).group(0)
                     self.assertNotRegex(consent_input, r'\schecked(?:\s|=|>)')
-                    self.assertIn("Я даю согласие на обработку персональных данных", form)
-                    self.assertIn("privacy.html", form)
-                    self.assertLess(form.index('name="privacy_consent"'), form.index('type="submit"'))
+                    consent = re.search(
+                        r'<label class="form__consent">\s*'
+                        r'<input[^>]+name="privacy_consent"[^>]*>\s*'
+                        r'<span>(.*?)</span>\s*</label>\s*'
+                        r'<button type="submit"',
+                        form,
+                        re.DOTALL,
+                    )
+                    self.assertIsNotNone(consent)
+                    expected_href = "privacy.html" if path.parent == ROOT else "../privacy.html"
+                    self.assertEqual(
+                        consent.group(1),
+                        "Я даю согласие на обработку персональных данных и принимаю условия "
+                        f'<a href="{expected_href}">Политики конфиденциальности</a>.',
+                    )
         self.assertEqual(lead_form_count, 27)
 
     def test_pages_request_the_current_stylesheet_version(self):

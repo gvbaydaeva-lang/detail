@@ -7,13 +7,22 @@ const EXPECTED_CONSENT_MESSAGE =
   'Подтвердите согласие на обработку персональных данных.';
 
 function createRequiredCheckbox(checked) {
+  const classes = new Set();
+  const attributes = new Map();
   return {
     name: 'privacy_consent',
     type: 'checkbox',
     checked,
-    classList: { add() {} },
-    focus() {},
-    setAttribute() {},
+    classList: {
+      add(name) { classes.add(name); },
+      remove(name) { classes.delete(name); },
+      contains(name) { return classes.has(name); },
+    },
+    focusCount: 0,
+    focus() { this.focusCount += 1; },
+    setAttribute(name, value) { attributes.set(name, value); },
+    removeAttribute(name) { attributes.delete(name); },
+    getAttribute(name) { return attributes.get(name) ?? null; },
     setCustomValidity(message) {
       this.validationMessage = message;
     },
@@ -35,7 +44,7 @@ function createFormHarness(checked) {
   let readyHandler;
 
   const form = {
-    reset() {},
+    reset() { checkbox.checked = false; },
     addEventListener(event, handler) {
       assert.equal(event, 'submit');
       submitHandler = handler;
@@ -48,7 +57,9 @@ function createFormHarness(checked) {
     },
     querySelectorAll(selector) {
       if (selector === '[required]') return [checkbox];
-      if (selector === '.form__input--error') return [];
+      if (selector === '.form__input--error') {
+        return checkbox.classList.contains('form__input--error') ? [checkbox] : [];
+      }
       return [];
     },
   };
@@ -114,8 +125,13 @@ function createFormHarness(checked) {
   await unchecked.submit();
   assert.equal(unchecked.endpointCalls(), 0);
   assert.equal(unchecked.status.innerHTML, EXPECTED_CONSENT_MESSAGE);
+  assert.equal(unchecked.checkbox.focusCount, 1);
+  assert.equal(unchecked.checkbox.getAttribute('aria-invalid'), 'true');
 
-  const checked = createFormHarness(true);
-  await checked.submit();
-  assert.equal(checked.endpointCalls(), 1);
+  unchecked.checkbox.checked = true;
+  await unchecked.submit();
+  assert.equal(unchecked.endpointCalls(), 1);
+  assert.equal(unchecked.checkbox.getAttribute('aria-invalid'), null);
+  assert.equal(unchecked.checkbox.classList.contains('form__input--error'), false);
+  assert.equal(unchecked.checkbox.checked, false);
 })();

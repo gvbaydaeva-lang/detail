@@ -2528,7 +2528,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   padding: 6px 0;
   font-size: 12px;
   line-height: 1.45;
-  color: var(--text-faint);
+  color: var(--text-muted);
   cursor: pointer;
 }
 
@@ -2542,6 +2542,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
 .form__consent-input:focus-visible {
   outline: 3px solid rgba(185, 151, 77, 0.4);
+  outline-color: #7a5a12;
   outline-offset: 3px;
 }
 
@@ -3695,6 +3696,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .footer__grid { grid-template-columns: 1fr; }
   .footer__map { height: 260px; order: 1; }
   .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .footer__bottom > p { align-self: flex-start; text-align: left; }
   .footer__bottom-actions { align-self: flex-end; }
   .footer__messengers,
   .footer__bottom-links { align-self: flex-end; }
