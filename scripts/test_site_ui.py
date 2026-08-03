@@ -176,7 +176,7 @@ class SiteUiTest(unittest.TestCase):
         self.assertIsNotNone(block_match)
         block = block_match.group(1)
         self.assertRegex(block, r"\bdisplay\s*:\s*flex\s*;")
-        self.assertNotRegex(block, r"\bflex-direction\s*:\s*column\s*;")
+        self.assertNotRegex(block, r"\bflex-direction\s*:\s*column(?:-reverse)?\s*;")
         self.assertRegex(block, r"\bmargin-left\s*:\s*auto\s*;")
 
         mobile_css = re.search(
