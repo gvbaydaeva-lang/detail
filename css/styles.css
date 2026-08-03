@@ -2560,19 +2560,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .form-success h3 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
 .form-success p { color: var(--text-muted); }
 
-/* ---- Footer quick contact ---- */
-.quick-contact {
+/* ---- Footer messengers ---- */
+.footer__messengers {
   display: flex;
-  width: 100%;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 28px 20px;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  gap: 10px;
+  margin-left: auto;
 }
 
-.quick-contact__link {
+.footer__messenger {
   display: inline-flex;
   width: 48px;
   height: 48px;
@@ -2588,22 +2584,22 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.quick-contact__link:hover {
+.footer__messenger:hover {
   color: #fff;
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
 }
 
-.quick-contact__link:focus-visible {
+.footer__messenger:focus-visible {
   outline: 3px solid #7a5a12;
   outline-offset: 3px;
 }
 
-.quick-contact__link--whatsapp { background: #187744; }
-.quick-contact__link--telegram { background: #2079b6; }
-.quick-contact__link--max { background: linear-gradient(135deg, #5546c9, #326ab6); }
+.footer__messenger--whatsapp { background: #187744; }
+.footer__messenger--telegram { background: #2079b6; }
+.footer__messenger--max { background: linear-gradient(135deg, #5546c9, #326ab6); }
 
-.quick-contact__link > span:first-child {
+.footer__messenger > span:first-child {
   line-height: 1;
 }
 
@@ -2664,6 +2660,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-top: 1px solid var(--border);
   font-size: 13px;
   color: var(--text-faint);
+}
+
+.footer__bottom-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer__bottom-links .footer__link {
+  margin-bottom: 0;
 }
 
 /* ---- Lightbox ---- */
@@ -3655,6 +3660,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   .footer__grid { grid-template-columns: 1fr; }
   .footer__map { height: 260px; order: 1; }
   .footer__bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .footer__messengers,
+  .footer__bottom-links { align-self: flex-end; }
+  .footer__messengers { justify-content: center; }
 
   .reviews-rating__row {
     gap: 12px;
@@ -3868,11 +3876,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 
 @media (max-width: 560px) {
-  .quick-contact {
-    gap: 10px;
-    padding: 22px 16px;
-  }
-  .quick-contact__link {
+  .footer__messenger {
     width: 46px;
     height: 46px;
   }

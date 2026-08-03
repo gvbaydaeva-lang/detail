@@ -16,7 +16,7 @@ sys.path.insert(0, str(SCRIPTS))
 from site_common import (  # noqa: E402
     SOCIALS,
     STYLES_VERSION,
-    render_quick_contacts,
+    render_footer_messengers,
     render_site_header,
     service_href,
 )
@@ -233,12 +233,15 @@ def render_service_page(slug, data):
       </div>
     </section>
   </main>
-{render_quick_contacts()}
   <footer class="footer">
     <div class="container">
       <div class="footer__bottom" style="border-top:none;padding-top:0">
         <p>&copy; 2026 LS Detailing</p>
-        <a href="../contacts.html" class="footer__link">Контакты</a>
+        <div class="footer__bottom-links">
+          <a href="../contacts.html" class="footer__link">Контакты</a>
+          <a href="../privacy.html" class="footer__link">Политика конфиденциальности</a>
+        </div>
+{render_footer_messengers()}
       </div>
     </div>
   </footer>
@@ -318,7 +321,6 @@ def render_services_page():
       </div>
     </section>
   </main>
-{render_quick_contacts()}
   <footer class="footer">
     <div class="container">
       <div class="footer__grid">
@@ -327,10 +329,10 @@ def render_services_page():
           <p>Премиальный детейлинг-центр в Элисте. Комплексный уход за автомобилем в одном месте.</p>
           <div class="socials socials--footer" style="margin-top:20px">{SOCIALS}</div>
         </div>
-        <div><h4 class="footer__heading">Навигация</h4><a href="services.html" class="footer__link">Услуги</a><a href="advantages.html" class="footer__link">Преимущества</a><a href="works.html" class="footer__link">Работы</a><a href="useful.html" class="footer__link">Полезное</a><a href="reviews.html" class="footer__link">Отзывы</a><a href="about.html" class="footer__link">О нас</a><a href="contacts.html" class="footer__link">Контакты</a></div>
+        <div><h4 class="footer__heading">Навигация</h4><a href="services.html" class="footer__link">Услуги</a><a href="advantages.html" class="footer__link">Преимущества</a><a href="works.html" class="footer__link">Работы</a><a href="useful.html" class="footer__link">Полезное</a><a href="reviews.html" class="footer__link">Отзывы</a><a href="about.html" class="footer__link">О нас</a><a href="contacts.html" class="footer__link">Контакты</a><a href="privacy.html" class="footer__link">Политика конфиденциальности</a></div>
         <div><h4 class="footer__heading">Контакты</h4><a href="tel:+79618422227" class="footer__link">+7 (961) 842-22-27</a><p class="footer__link">Республика Калмыкия, г. Элиста, 10 улица, д. 52</p><p class="footer__link">Ежедневно 10:00–19:00</p></div>
       </div>
-      <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p><a href="privacy.html" class="footer__link">Политика конфиденциальности</a></div>
+      <div class="footer__bottom"><p>&copy; 2026 LS Detailing</p>{render_footer_messengers()}</div>
     </div>
   </footer>
   <script src="js/main.js?v=6"></script>
@@ -345,7 +347,6 @@ def patch_header_in_file(path, prefix="", active=None):
     pattern = (
         r'^[ \t]*(?:<div class="topbar">.*?</div>\s*)?'
         r'<header class="(?:site-header|header)" id="header">.*?</header>'
-        r'(?:\s*<aside class="quick-contact".*?</aside>)?'
     )
     flags = re.DOTALL | re.MULTILINE
     if not re.search(pattern, text, flags):

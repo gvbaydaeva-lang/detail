@@ -43,8 +43,9 @@ class MarkupNode:
 
     def descendants(self):
         for child in self.children:
-            yield child
-            yield from child.descendants()
+            if isinstance(child, MarkupNode):
+                yield child
+                yield from child.descendants()
 
     def text(self):
         return "".join(child for child in self.children if isinstance(child, str)) + "".join(
