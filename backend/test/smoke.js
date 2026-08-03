@@ -7,16 +7,24 @@ import { createLeadApp } from '../src/app.js';
 
 const directory = await mkdtemp(join(tmpdir(), 'ls-leads-'));
 const leadsFile = join(directory, 'leads.ndjson');
+const telegramRequests = [];
 const app = createLeadApp({
   leadsFile,
   env: {
     ALLOWED_ORIGINS: 'https://ls-detailing.ru',
     IP_HASH_SECRET: 'test-secret',
     RATE_LIMIT_MAX: '50',
+    TELEGRAM_BOT_TOKEN: 'test-bot-token',
+    TELEGRAM_CHAT_ID: '-1001234567890',
+  },
+  fetchImpl: async (url, options) => {
+    telegramRequests.push({ url, options });
+    return { ok: true, status: 200 };
   },
 });
 
 async function request({
+  appImpl = app,
   method = 'GET',
   url = '/',
   body,
@@ -48,7 +56,7 @@ async function request({
     },
   };
 
-  await app(req, res);
+  await appImpl(req, res);
   return {
     ...result,
     json: result.body ? JSON.parse(result.body) : null,
@@ -79,6 +87,13 @@ assert.equal(stored.name, 'Анна');
 assert.equal(stored.phone_normalized, '+79618422227');
 assert.equal(stored.utm_source, 'yandex');
 assert.equal(stored.source_ip_hash.length, 24);
+assert.equal(telegramRequests.length, 1);
+assert.equal(telegramRequests[0].url, 'https://api.telegram.org/bottest-bot-token/sendMessage');
+const telegramBody = JSON.parse(telegramRequests[0].options.body);
+assert.equal(telegramBody.chat_id, '-1001234567890');
+assert.match(telegramBody.text, /Новая заявка/);
+assert.match(telegramBody.text, /Анна/);
+assert.match(telegramBody.text, /\+79618422227/);
 
 const invalid = await request({
   method: 'POST',
@@ -89,6 +104,7 @@ assert.equal(invalid.status, 422);
 assert.ok(invalid.json.fields.name);
 assert.ok(invalid.json.fields.phone);
 assert.ok(invalid.json.fields.service);
+assert.equal(telegramRequests.length, 1);
 
 const forbidden = await request({
   method: 'POST',
@@ -98,4 +114,46 @@ const forbidden = await request({
 });
 assert.equal(forbidden.status, 403);
 
-console.log('Backend smoke test passed: health, storage, validation and CORS.');
+const fallbackLeadsFile = join(directory, 'telegram-fallback.ndjson');
+const fallbackApp = createLeadApp({
+  leadsFile: fallbackLeadsFile,
+  env: {
+    ALLOWED_ORIGINS: 'https://ls-detailing.ru',
+    IP_HASH_SECRET: 'test-secret',
+    RATE_LIMIT_MAX: '50',
+    TELEGRAM_BOT_TOKEN: 'test-bot-token',
+    TELEGRAM_CHAT_ID: '-1001234567890',
+  },
+  fetchImpl: async () => {
+    throw new Error('Telegram unavailable');
+  },
+});
+
+const originalConsoleError = console.error;
+const telegramErrors = [];
+console.error = (...args) => telegramErrors.push(args.join(' '));
+let fallback;
+try {
+  fallback = await request({
+    appImpl: fallbackApp,
+    method: 'POST',
+    url: '/api/leads',
+    body: {
+      name: 'Иван Иванов',
+      phone: '+7 (999) 999-99-99',
+      service: 'Полировка кузова',
+      request_type: 'Запись',
+    },
+  });
+} finally {
+  console.error = originalConsoleError;
+}
+
+assert.equal(fallback.status, 201);
+assert.equal(fallback.json.ok, true);
+const fallbackStored = JSON.parse((await readFile(fallbackLeadsFile, 'utf8')).trim());
+assert.equal(fallbackStored.name, 'Иван Иванов');
+assert.equal(fallbackStored.phone_normalized, '+79999999999');
+assert.match(telegramErrors.join('\n'), /Telegram lead notification failed/);
+
+console.log('Backend smoke test passed: health, storage, Telegram, validation and CORS.');

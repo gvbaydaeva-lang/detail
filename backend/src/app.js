@@ -89,6 +89,45 @@ function sendJson(response, status, payload, origin) {
   response.end(body);
 }
 
+function formatTelegramLead(lead) {
+  const lines = [
+    'Новая заявка с сайта LS Detailing',
+    `Тип: ${lead.request_type}`,
+    `Имя: ${lead.name}`,
+    `Телефон: ${lead.phone_normalized}`,
+    `Услуга: ${lead.service}`,
+  ];
+
+  if (lead.comment) lines.push(`Комментарий: ${lead.comment}`);
+  if (lead.page_url) lines.push(`Страница: ${lead.page_url}`);
+
+  const utm = [lead.utm_source, lead.utm_medium, lead.utm_campaign].filter(Boolean).join(' / ');
+  if (utm) lines.push(`UTM: ${utm}`);
+  lines.push(`ID: ${lead.id}`);
+
+  return lines.join('\n').slice(0, 4096);
+}
+
+async function sendTelegramLead(lead, env, fetchImpl) {
+  const token = cleanString(env.TELEGRAM_BOT_TOKEN, 256);
+  const chatId = cleanString(env.TELEGRAM_CHAT_ID, 128);
+  if (!token || !chatId) return { configured: false, delivered: false };
+
+  const response = await fetchImpl(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: formatTelegramLead(lead),
+      disable_web_page_preview: true,
+    }),
+    signal: AbortSignal.timeout(5_000),
+  });
+
+  if (!response.ok) throw new Error(`Telegram API returned ${response.status}`);
+  return { configured: true, delivered: true };
+}
+
 async function readJson(request) {
   let size = 0;
   const chunks = [];
@@ -112,6 +151,7 @@ async function readJson(request) {
 
 export function createLeadApp(options = {}) {
   const env = options.env || process.env;
+  const fetchImpl = options.fetchImpl || globalThis.fetch;
   const allowedOrigins = new Set(
     (env.ALLOWED_ORIGINS || 'https://ls-detailing.ru')
       .split(',')
@@ -217,6 +257,13 @@ export function createLeadApp(options = {}) {
       };
       await appendLead(storedLead);
 
+      // Файл заявок остаётся резервным каналом, если Telegram временно недоступен.
+      try {
+        await sendTelegramLead(storedLead, env, fetchImpl);
+      } catch (error) {
+        console.error('Telegram lead notification failed:', error.message);
+      }
+
       return sendJson(response, 201, { ok: true, id: storedLead.id }, allowedOrigin);
     } catch (error) {
       const status = error.statusCode || 500;
@@ -231,4 +278,4 @@ export function createLeadApp(options = {}) {
   };
 }
 
-export { validateLead };
+export { formatTelegramLead, validateLead };
