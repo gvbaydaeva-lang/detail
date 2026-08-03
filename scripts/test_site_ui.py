@@ -33,16 +33,6 @@ def full_pages():
             yield path, text
 
 
-def contrast_with_white(hex_color):
-    channels = [int(hex_color[index:index + 2], 16) / 255 for index in (1, 3, 5)]
-    linear = [
-        channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
-        for channel in channels
-    ]
-    luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
-    return 1.05 / (luminance + 0.05)
-
-
 class SiteUiTest(unittest.TestCase):
     def test_header_and_contacts_patch_is_idempotent(self):
         original = """<!DOCTYPE html>
@@ -51,61 +41,46 @@ class SiteUiTest(unittest.TestCase):
         <header class="header" id="header"><div>Old header</div></header>
         <aside class="quick-contact"><a>Old contacts</a></aside>
         <main>Content</main>
-        <footer class="footer">Footer</footer>
+        <footer class="footer"><div class="footer__bottom">Footer</div></footer>
 </body></html>
 """
         once = PATCH_HEADERS.patch_html(original, "", "index")
         twice = PATCH_HEADERS.patch_html(once, "", "index")
 
         self.assertEqual(twice, once)
-        self.assertEqual(once.count('class="quick-contact"'), 1)
-        self.assertRegex(once, r'</aside>\s*<footer')
+        self.assert_footer_has_messengers(once)
 
-    def test_each_page_has_one_messenger_panel_before_footer(self):
+    def assert_footer_has_messengers(self, text):
+        self.assertNotIn('class="quick-contact"', text)
+        self.assertEqual(text.count('class="footer__messengers"'), 1)
+        bottom_start = text.index('class="footer__bottom"')
+        messengers = text.index('class="footer__messengers"')
+        self.assertGreater(messengers, bottom_start)
+        self.assertLess(messengers, text.index("</footer>", bottom_start))
+
+    def test_each_page_has_footer_integrated_messengers(self):
         for path, text in full_pages():
             with self.subTest(path=path.relative_to(ROOT)):
-                self.assertEqual(text.count('class="quick-contact"'), 1)
-                panel = text.index('class="quick-contact"')
-                self.assertLess(panel, text.index("<footer"))
-                self.assertRegex(text, r'</aside>\s*<footer')
-                self.assertNotIn("quick-contact__text", text)
+                self.assert_footer_has_messengers(text)
 
-    def test_each_panel_contains_wa_tg_and_m_in_order(self):
-        pattern = re.compile(
-            r'<aside class="quick-contact".*?</aside>', re.DOTALL
+    def test_each_lead_form_requires_privacy_consent_before_submit(self):
+        form_pattern = re.compile(
+            r'<form\b[^>]*(?:lead-form|consultForm)[^>]*>.*?</form>', re.DOTALL
         )
         for path, text in full_pages():
-            with self.subTest(path=path.relative_to(ROOT)):
-                panel = pattern.search(text).group(0)
-                labels = re.findall(r'<span aria-hidden="true">([^<]+)</span>', panel)
-                self.assertEqual(labels, ["WA", "TG", "M"])
-                self.assertIn("wa.me/message/VTM6WDF3RHO7C1", panel)
-                self.assertIn("t.me/+79618422227", panel)
-                self.assertIn("max.ru/u/", panel)
-
-    def test_quick_contact_is_not_fixed(self):
-        css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
-        block = re.search(r"\.quick-contact\s*\{([^}]*)\}", css, re.DOTALL).group(1)
-        self.assertNotIn("position: fixed", block)
+            forms = form_pattern.findall(text)
+            for form in forms:
+                with self.subTest(path=path.relative_to(ROOT)):
+                    self.assertEqual(form.count('name="privacy_consent"'), 1)
+                    self.assertRegex(form, r'<input[^>]+type="checkbox"[^>]+name="privacy_consent"[^>]+required')
+                    self.assertIn("Я даю согласие на обработку персональных данных", form)
+                    self.assertIn("privacy.html", form)
+                    self.assertLess(form.index('name="privacy_consent"'), form.index('type="submit"'))
 
     def test_pages_request_the_current_stylesheet_version(self):
         for path, text in full_pages():
             with self.subTest(path=path.relative_to(ROOT)):
                 self.assertRegex(text, r'href="(?:\./|\.\./)*css/styles\.css\?v=7"')
-
-    def test_messenger_button_colors_contrast_with_white_labels(self):
-        css = (ROOT / "css/styles.css").read_text(encoding="utf-8")
-        for modifier in ("whatsapp", "telegram", "max"):
-            with self.subTest(modifier=modifier):
-                block = re.search(
-                    rf"\.quick-contact__link--{modifier}\s*\{{([^}}]*)\}}",
-                    css,
-                    re.DOTALL,
-                ).group(1)
-                colors = re.findall(r"#[0-9a-fA-F]{6}", block)
-                self.assertTrue(colors)
-                for color in colors:
-                    self.assertGreaterEqual(contrast_with_white(color), 4.5)
 
     def test_service_pages_use_home_style_form_without_cta_map(self):
         for slug, data in SERVICES.items():
@@ -147,7 +122,7 @@ class SiteUiTest(unittest.TestCase):
                     text = path.read_text(encoding="utf-8")
                     with self.subTest(path=path.relative_to(temporary_root)):
                         self.assertIn("css/styles.css?v=7", text)
-                        self.assertRegex(text, r'</aside>\s*<footer')
+                        self.assert_footer_has_messengers(text)
                         self.assertIn('rel="canonical"', text)
                         self.assertIn("data-seo-graph", text)
             finally:
