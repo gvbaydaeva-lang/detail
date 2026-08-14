@@ -288,6 +288,7 @@ function initForms() {
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (submit?.disabled) return;
       clearFormErrors(form);
 
       const payload = collectLeadPayload(form, trackingFields);
@@ -303,30 +304,19 @@ function initForms() {
 
       if (payload.website) return;
 
-      if (!endpoint) {
-        const whatsappUrl = buildWhatsAppLeadUrl(payload);
-        setFormStatus(
-          status,
-          `Онлайн-отправка подключается. <a href="${whatsappUrl}" target="_blank" rel="noopener">Отправьте эту заявку в WhatsApp</a>.`,
-          'warning'
-        );
-        return;
-      }
-
       submit?.setAttribute('disabled', '');
       if (submit) submit.textContent = 'Отправляем…';
       setFormStatus(status, 'Отправляем заявку…', 'pending');
 
       try {
-        await sendLeadWithRetry(endpoint, payload);
+        await sendLead(endpoint, payload);
         form.reset();
         if (serviceField) serviceField.value = payload.service;
         setFormStatus(status, 'Спасибо! Заявка отправлена. Мы свяжемся с вами в рабочее время.', 'success');
-      } catch (error) {
-        const whatsappUrl = buildWhatsAppLeadUrl(payload);
+      } catch {
         setFormStatus(
           status,
-          `Не удалось отправить автоматически. <a href="${whatsappUrl}" target="_blank" rel="noopener">Отправить заявку в WhatsApp</a>.`,
+          'Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам.',
           'error'
         );
       } finally {
@@ -340,15 +330,11 @@ function initForms() {
 }
 
 function resolveLeadEndpoint() {
-  const configured =
+  return (
     document.querySelector('meta[name="ls-form-endpoint"]')?.content?.trim() ||
     window.LS_FORM_ENDPOINT ||
-    '';
-  if (configured) return configured;
-
-  return ['127.0.0.1', 'localhost'].includes(window.location.hostname)
-    ? 'http://127.0.0.1:8787/api/leads'
-    : '';
+    '/api/leads'
+  );
 }
 
 function createFormStatus(form) {
@@ -401,41 +387,20 @@ function validateLeadForm(form, payload) {
   return firstInvalid;
 }
 
-async function sendLeadWithRetry(endpoint, payload) {
-  let lastError;
-  for (let attempt = 0; attempt < 2; attempt += 1) {
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 10000);
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
-      });
-      if (!response.ok) throw new Error(`Lead endpoint returned ${response.status}`);
-      return;
-    } catch (error) {
-      lastError = error;
-    } finally {
-      window.clearTimeout(timer);
-    }
+async function sendLead(endpoint, payload) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), 10000);
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`Lead endpoint returned ${response.status}`);
+  } finally {
+    window.clearTimeout(timer);
   }
-  throw lastError;
-}
-
-function buildWhatsAppLeadUrl(payload) {
-  const lines = [
-    'Здравствуйте! Хочу оставить заявку в LS Detailing.',
-    payload.request_type ? `Тип: ${payload.request_type}` : '',
-    payload.service ? `Услуга: ${payload.service}` : '',
-    payload.name ? `Имя: ${payload.name}` : '',
-    payload.phone ? `Телефон: ${payload.phone}` : '',
-    payload.comment ? `Комментарий: ${payload.comment}` : '',
-    `Страница: ${payload.page_url}`,
-    payload.utm_campaign ? `Кампания: ${payload.utm_campaign}` : '',
-  ].filter(Boolean);
-  return `https://wa.me/79618422227?text=${encodeURIComponent(lines.join('\n'))}`;
 }
 
 function setFormStatus(status, message, type) {
