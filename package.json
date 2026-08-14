@@ -1,0 +1,12 @@
+{
+  "name": "ls-detailing-site",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs && node scripts/test_form_consent.js",
+    "build": "node scripts/build-cloudflare-pages.mjs"
+  }
+}
