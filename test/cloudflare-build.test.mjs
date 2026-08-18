@@ -7,6 +7,7 @@ import test from 'node:test';
 const projectRoot = path.resolve(import.meta.dirname, '..');
 const distRoot = path.join(projectRoot, 'dist');
 const maxFileBytes = 25 * 1024 * 1024;
+const assetOrigin = 'https://ls-detailing.pages.dev';
 
 function walk(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -63,6 +64,42 @@ test('сборка публикует только файлы сайта и со
       assert.ok(
         existsSync(target),
         `${path.relative(distRoot, htmlFile)} ссылается на отсутствующий файл: ${reference}`
+      );
+    }
+  }
+});
+
+test('сборка загружает статические файлы через стабильный Pages-домен', () => {
+  execFileSync(process.execPath, ['scripts/build-cloudflare-pages.mjs'], {
+    cwd: projectRoot,
+    stdio: 'pipe',
+  });
+
+  const files = walk(distRoot);
+  const htmlFiles = files.filter((file) => file.endsWith('.html'));
+  const assetAttributePattern =
+    /(?:src|poster|data-lightbox-src|srcset)=["']([^"']+)["']/gi;
+  const stylesheetPattern =
+    /<link\b[^>]*\brel=["'][^"']*stylesheet[^"']*["'][^>]*\bhref=["']([^"']+)["'][^>]*>/gi;
+
+  for (const htmlFile of htmlFiles) {
+    const html = readFileSync(htmlFile, 'utf8');
+    const references = [
+      ...Array.from(html.matchAll(assetAttributePattern), (match) => match[1]),
+      ...Array.from(html.matchAll(stylesheetPattern), (match) => match[1]),
+    ];
+
+    for (const reference of references) {
+      if (!reference || /^(?:https?:|data:|#)/i.test(reference)) continue;
+      assert.fail(
+        `${path.relative(distRoot, htmlFile)} оставляет статический файл на пользовательском домене: ${reference}`
+      );
+    }
+
+    if (references.length > 0) {
+      assert.ok(
+        references.some((reference) => reference.startsWith(assetOrigin)),
+        `${path.relative(distRoot, htmlFile)} не использует Pages-домен для статики`
       );
     }
   }
