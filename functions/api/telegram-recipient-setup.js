@@ -33,6 +33,16 @@ async function handleRecipientSetup(
   if (!token) return jsonResponse(503, { ok: false });
 
   try {
+    const botResponse = await fetchImpl(
+      `https://api.telegram.org/bot${token}/getMe`,
+      { method: 'GET', signal: AbortSignal.timeout(8_000) }
+    );
+    if (!botResponse.ok) return jsonResponse(502, { ok: false });
+
+    const botBody = await botResponse.json();
+    const botUsername = String(botBody?.result?.username || '').slice(0, 80);
+    if (!botBody?.ok || !botUsername) return jsonResponse(502, { ok: false });
+
     const telegramResponse = await fetchImpl(
       `https://api.telegram.org/bot${token}/getUpdates?offset=-20&limit=20&timeout=0&allowed_updates=%5B%22message%22%5D`,
       { method: 'GET', signal: AbortSignal.timeout(8_000) }
@@ -60,7 +70,7 @@ async function handleRecipientSetup(
         message_date: message.date,
       }));
 
-    return jsonResponse(200, { ok: true, candidates });
+    return jsonResponse(200, { ok: true, bot_username: botUsername, candidates });
   } catch {
     return jsonResponse(502, { ok: false });
   }

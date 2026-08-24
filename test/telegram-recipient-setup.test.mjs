@@ -21,27 +21,31 @@ const env = {
 
 test('возвращает только недавний личный чат, написавший боту', async () => {
   const previousFetch = globalThis.fetch;
-  globalThis.fetch = async () => new Response(JSON.stringify({
-    ok: true,
-    result: [
-      {
-        update_id: 1,
-        message: {
-          date: 1_787_566_700,
-          text: 'тест',
-          chat: { id: 123456789, type: 'private', first_name: 'Клиент', username: 'client' },
+  const responses = [
+    { ok: true, result: { username: 'ls_detailing_requests_bot' } },
+    {
+      ok: true,
+      result: [
+        {
+          update_id: 1,
+          message: {
+            date: 1_787_566_700,
+            text: 'тест',
+            chat: { id: 123456789, type: 'private', first_name: 'Клиент', username: 'client' },
+          },
         },
-      },
-      {
-        update_id: 2,
-        message: {
-          date: 1_787_566_710,
-          text: 'не учитывать',
-          chat: { id: -100123, type: 'supergroup', title: 'Группа' },
+        {
+          update_id: 2,
+          message: {
+            date: 1_787_566_710,
+            text: 'не учитывать',
+            chat: { id: -100123, type: 'supergroup', title: 'Группа' },
+          },
         },
-      },
-    ],
-  }), { status: 200 });
+      ],
+    },
+  ];
+  globalThis.fetch = async () => new Response(JSON.stringify(responses.shift()), { status: 200 });
 
   try {
     const response = await handleRecipientSetup(
@@ -54,6 +58,7 @@ test('возвращает только недавний личный чат, н
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
       ok: true,
+      bot_username: 'ls_detailing_requests_bot',
       candidates: [{
         chat_id: '123456789',
         first_name: 'Клиент',
