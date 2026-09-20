@@ -171,6 +171,13 @@ export async function onRequestOptions({ request }) {
   return handleOptions(request);
 }
 
+export async function onRequestGet() {
+  return jsonResponse(405, {
+    ok: false,
+    error: 'Метод запроса не поддерживается.',
+  });
+}
+
 export async function onRequestPost({ request, env }) {
   return handleLeadRequest(request, env, globalThis.fetch);
 }

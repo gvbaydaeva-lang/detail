@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { onRequestOptions, onRequestPost } from '../functions/api/leads.js';
+import { onRequestGet, onRequestOptions, onRequestPost } from '../functions/api/leads.js';
 
 const env = {
   TELEGRAM_BOT_TOKEN: 'test-token',
@@ -65,6 +65,19 @@ test('валидная заявка отправляется в Telegram оди�
     assert.match(telegramBody.text, /\+79999999999/);
     assert.match(telegramBody.text, /Полировка кузова/);
   });
+});
+
+test('GET на endpoint заявки возвращает безопасный метод-ошибку, а не главную страницу', async () => {
+  const response = await onRequestGet({
+    request: new Request('https://ls-detailing.ru/api/leads', { method: 'GET' }),
+  });
+
+  assert.equal(response.status, 405);
+  assert.deepEqual(await response.json(), {
+    ok: false,
+    error: 'Метод запроса не поддерживается.',
+  });
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
 });
 
 test('предварительный запрос с адреса сайта разрешён', async () => {
