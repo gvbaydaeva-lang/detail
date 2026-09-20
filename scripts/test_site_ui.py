@@ -97,6 +97,11 @@ def nodes_with_class(root, class_name):
 
 
 class SiteUiTest(unittest.TestCase):
+    def test_pages_do_not_run_client_side_https_redirect(self):
+        for path, text in full_pages():
+            with self.subTest(path=path.relative_to(ROOT)):
+                self.assertNotIn("https-redirect.js", text)
+
     def test_header_and_contacts_patch_is_idempotent(self):
         original = """<!DOCTYPE html>
 <html><body>

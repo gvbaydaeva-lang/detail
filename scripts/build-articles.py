@@ -320,7 +320,6 @@ def render_article(article):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="../js/https-redirect.js"></script>
   <meta name="description" content="{article['excerpt']}">
   <title>{article['title']} — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -414,7 +413,6 @@ def render_useful_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="js/https-redirect.js"></script>
   <meta name="description" content="Полезные статьи о детейлинге от LS Detailing — советы по уходу за автомобилем в Элисте.">
   <title>Полезные детейлинги — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">

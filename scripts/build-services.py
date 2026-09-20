@@ -158,7 +158,6 @@ def render_service_page(slug, data):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="../js/https-redirect.js"></script>
   <meta name="description" content="{data['excerpt']}">
   <title>{data['title']} — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -286,7 +285,6 @@ def render_services_page():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="js/https-redirect.js"></script>
   <meta name="description" content="Услуги LS Detailing — оклейка, полировка, химчистка, малярные работы, перетяжка и дооснащение в Элисте.">
   <title>Услуги — LS Detailing</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
