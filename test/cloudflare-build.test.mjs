@@ -118,3 +118,17 @@ test('главная страница содержит метаданные дл
   assert.match(html, /<meta property="og:description" content="LS Detailing — премиальный детейлинг-центр в Элисте\. Комплексный уход за автомобилем в одном месте\.">/);
   assert.match(html, /<meta property="og:image" content="https:\/\/ls-detailing\.pages\.dev\/images\/hero-main-1920\.webp">/);
 });
+
+test('сборка не публикует пустые HTML-файлы', () => {
+  execFileSync(process.execPath, ['scripts/build-cloudflare-pages.mjs'], {
+    cwd: projectRoot,
+    stdio: 'pipe',
+  });
+
+  for (const file of walk(distRoot).filter((entry) => entry.endsWith('.html'))) {
+    assert.ok(
+      statSync(file).size > 0,
+      `${path.relative(distRoot, file)} не должен публиковаться пустым`
+    );
+  }
+});

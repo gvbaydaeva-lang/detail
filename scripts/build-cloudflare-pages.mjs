@@ -17,7 +17,9 @@ async function copyRootFiles() {
     if (!entry.isFile()) continue;
     const extension = path.extname(entry.name).toLowerCase();
     if (!publicRootNames.has(entry.name) && !publicRootExtensions.has(extension)) continue;
-    await cp(path.join(projectRoot, entry.name), path.join(distRoot, entry.name));
+    const sourcePath = path.join(projectRoot, entry.name);
+    if (extension === '.html' && (await stat(sourcePath)).size === 0) continue;
+    await cp(sourcePath, path.join(distRoot, entry.name));
   }
 }
 
