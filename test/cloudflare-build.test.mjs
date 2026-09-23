@@ -104,3 +104,17 @@ test('сборка загружает статические файлы чере
     }
   }
 });
+
+test('главная страница содержит метаданные для ссылок из мессенджеров', () => {
+  execFileSync(process.execPath, ['scripts/build-cloudflare-pages.mjs'], {
+    cwd: projectRoot,
+    stdio: 'pipe',
+  });
+
+  const html = readFileSync(path.join(distRoot, 'index.html'), 'utf8');
+  assert.match(html, /<link rel="canonical" href="https:\/\/www\.ls-detailing\.ru\/">/);
+  assert.match(html, /<meta property="og:url" content="https:\/\/www\.ls-detailing\.ru\/">/);
+  assert.match(html, /<meta property="og:title" content="LS Detailing — Детейлинг-центр в Элисте">/);
+  assert.match(html, /<meta property="og:description" content="LS Detailing — премиальный детейлинг-центр в Элисте\. Комплексный уход за автомобилем в одном месте\.">/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/ls-detailing\.pages\.dev\/images\/hero-main-1920\.webp">/);
+});
