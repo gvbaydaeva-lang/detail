@@ -1,5 +1,9 @@
 const MAX_BODY_BYTES = 32 * 1024;
 const TELEGRAM_MESSAGE_LIMIT = 4096;
+const TRUSTED_SITE_ORIGINS = new Set([
+  'https://ls-detailing.ru',
+  'https://www.ls-detailing.ru',
+]);
 const REQUEST_TYPES = new Set([
   'Консультация',
   'Запись',
@@ -43,7 +47,7 @@ function jsonResponse(status, payload, origin = '') {
 
 function sameOrigin(request) {
   const origin = request.headers.get('Origin') || '';
-  return origin && origin === new URL(request.url).origin ? origin : '';
+  return TRUSTED_SITE_ORIGINS.has(origin) ? origin : '';
 }
 
 function validateLead(body) {

@@ -92,6 +92,17 @@ test('предварительный запрос с адреса сайта р�
   assert.equal(response.headers.get('Access-Control-Allow-Methods'), 'POST, OPTIONS');
 });
 
+test('предварительный запрос с GitHub Pages адреса www разрешён', async () => {
+  const request = new Request('https://ls-detailing.pages.dev/api/leads', {
+    method: 'OPTIONS',
+    headers: { Origin: 'https://www.ls-detailing.ru' },
+  });
+  const response = await onRequestOptions({ request });
+
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get('Access-Control-Allow-Origin'), 'https://www.ls-detailing.ru');
+});
+
 test('запрос с чужого сайта отклоняется', async () => {
   await withTelegram(new Response(null, { status: 200 }), async (calls) => {
     const response = await onRequestPost({
