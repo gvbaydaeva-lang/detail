@@ -252,6 +252,8 @@ function initLightbox() {
   });
 }
 
+const DEFAULT_LEAD_ENDPOINT = 'https://ls-detailing.pages.dev/api/leads';
+
 function initForms() {
   const forms = document.querySelectorAll('.lead-form, #consultForm');
   if (!forms.length) return;
@@ -266,7 +268,7 @@ function initForms() {
   const endpoint =
     document.querySelector('meta[name="ls-form-endpoint"]')?.content?.trim() ||
     window.LS_FORM_ENDPOINT ||
-    '';
+    DEFAULT_LEAD_ENDPOINT;
 
   forms.forEach((form) => {
     const status = form.querySelector('[data-form-status]') || createFormStatus(form);

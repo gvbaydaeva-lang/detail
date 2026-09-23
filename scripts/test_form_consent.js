@@ -41,6 +41,7 @@ function createFormHarness(checked) {
   };
   let submitHandler;
   let endpointCalls = 0;
+  let endpointUrl = '';
   let readyHandler;
 
   const form = {
@@ -90,13 +91,14 @@ function createFormHarness(checked) {
         return [];
       },
     },
-    fetch: async () => {
+    fetch: async (url) => {
       endpointCalls += 1;
+      endpointUrl = url;
       return { ok: true };
     },
     sessionStorage: { getItem() { return ''; }, setItem() {} },
     window: {
-      LS_FORM_ENDPOINT: 'https://forms.example.test/lead',
+      LS_FORM_ENDPOINT: '',
       clearTimeout() {},
       location: { href: 'https://example.test/contact', search: '' },
       setTimeout() { return 1; },
@@ -111,6 +113,7 @@ function createFormHarness(checked) {
   return {
     checkbox,
     endpointCalls: () => endpointCalls,
+    endpointUrl: () => endpointUrl,
     status,
     async submit() {
       let prevented = false;
@@ -131,6 +134,7 @@ function createFormHarness(checked) {
   unchecked.checkbox.checked = true;
   await unchecked.submit();
   assert.equal(unchecked.endpointCalls(), 1);
+  assert.equal(unchecked.endpointUrl(), 'https://ls-detailing.pages.dev/api/leads');
   assert.equal(unchecked.checkbox.getAttribute('aria-invalid'), null);
   assert.equal(unchecked.checkbox.classList.contains('form__input--error'), false);
   assert.equal(unchecked.checkbox.checked, false);
