@@ -70,7 +70,6 @@ def page_schema(path, source, url):
         },
         "sameAs": [
             "https://yandex.com/maps/-/CTQgrE~F",
-            "https://www.instagram.com/detailing_car_ls",
         ],
     }
     webpage = {
