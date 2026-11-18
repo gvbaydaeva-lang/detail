@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+  initPartnerFooter();
   initHeader();
   initServicesDropdown();
   initMobileNav();
@@ -11,6 +12,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initPhoneMask();
   initServiceHeroScrim();
 });
+
+function initPartnerFooter() {
+  const footer = document.querySelector('.footer');
+  if (!footer || footer.querySelector('.footer__partner')) return;
+
+  const script = document.querySelector('script[src*="/js/main.js"]');
+  const logoSrc = script
+    ? new URL('../images/partners/my-business-kalmykia.png', script.src).href
+    : '../images/partners/my-business-kalmykia.png';
+
+  const partner = document.createElement('div');
+  partner.className = 'footer__partner';
+  partner.innerHTML = '<span>Сделано при поддержке Центра «Мой бизнес» Республики Калмыкия</span>'
+    + `<img src="${logoSrc}" alt="Логотип «Мой бизнес» Республики Калмыкия">`;
+  footer.append(partner);
+}
 
 function initHeader() {
   const header = document.getElementById('header');
