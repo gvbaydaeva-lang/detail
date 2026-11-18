@@ -2705,6 +2705,43 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin-bottom: 0;
 }
 
+.footer__partner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  max-width: var(--container);
+  margin: 24px auto 0;
+  padding: 24px 28px 0;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-faint);
+  text-align: right;
+}
+
+.footer__partner img {
+  width: clamp(128px, 11vw, 168px);
+  height: auto;
+  max-height: 52px;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .footer__partner {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-right: 16px;
+    padding-left: 16px;
+    text-align: left;
+  }
+
+  .footer__partner img {
+    width: 136px;
+  }
+}
+
 /* ---- Lightbox ---- */
 .lightbox {
   position: fixed;
